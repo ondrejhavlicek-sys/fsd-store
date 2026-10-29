@@ -1,0 +1,85 @@
+/* Product detail page (no Figma frame; reuses the tokens and look of css/store.css). */
+.mk-pdp { padding-bottom: 48px; }
+.mk-pdp .mk-crumbs { margin-bottom: 24px; }
+.mk-pdp-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 520px); gap: 48px; align-items: start; }
+.mk-pdp-media { max-width: 640px; }
+.mk-pdp-img { position: relative; aspect-ratio: 1; background: #f3f3f3; border-radius: 12px; overflow: hidden; }
+.mk-pdp-img > img { display: block; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: darken; }
+.mk-pdp-img .mk-heart { right: 8px; top: 8px; }
+
+.mk-pdp-name { margin: 0 0 8px; font-size: 28px; line-height: 32px; font-weight: 600; color: #444; }
+.mk-pdp-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 20px; color: #666; }
+.mk-pdp-meta .mk-pill { color: #222; font-size: 12px; line-height: 16px; }
+.mk-pdp-meta a { color: var(--mk-navy, #002d72); font-weight: 600; text-underline-offset: 3px; }
+
+.mk-pdp-card { border: 1px solid var(--mk-line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.mk-pdp-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.mk-pdp-label { font-weight: 600; }
+.mk-seg-sm { width: 200px; }
+.mk-pdp-price { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 4px 12px; margin-top: 4px; }
+.mk-now-lg { height: 40px; align-items: flex-start; gap: 4px; }
+.mk-now-lg b { font-size: 36px; line-height: 40px; }
+.mk-now-lg sup { font-size: 18px; line-height: 24px; }
+.mk-now-lg i { align-self: flex-end; font-style: normal; font-size: 18px; line-height: 28px; font-weight: 600; margin-left: 2px; }
+.mk-now-lg.sale { margin-inline: 0; padding-inline: 8px; }
+.mk-pdp-price .mk-old { padding: 0; font-size: 16px; line-height: 24px; }
+.mk-pdp-price .mk-sale-note { margin-bottom: 2px; }
+.mk-pdp-vat { color: #666; font-size: 16px; line-height: 24px; }
+.mk-pdp-unit { display: flex; flex-wrap: wrap; gap: 0 16px; color: #666; }
+.mk-pdp-note { margin: 0; color: #666; font-size: 12px; line-height: 16px; }
+.mk-pdp-avail { display: flex; align-items: flex-start; gap: 8px; margin-top: 8px; }
+.mk-dot-s { flex: none; width: 10px; height: 10px; margin-top: 4px; border-radius: 99px; background: #1a8a5a; }
+.mk-pdp-avail.no .mk-dot-s { background: #c26a00; }
+.mk-pdp-buyrow { display: flex; gap: 12px; margin-top: 8px; }
+.mk-qty { flex: none; display: flex; align-items: center; height: 48px; border: 1px solid #fff; border-radius: 99px; background: rgba(240, 240, 240, .95); box-shadow: 0 0 0 1px var(--mk-line); }
+.mk-qty-btn { width: 44px; height: 44px; margin: 1px; padding: 0; border: 0; border-radius: 99px; display: grid; place-items: center; cursor: pointer; background: var(--mk-sel-bg); }
+.mk-qty-btn:last-child { background: var(--mk-cta); }
+.mk-qty-btn:last-child:hover { background: #2a7bf0; }
+.mk-qty-btn:first-child:hover { background: #c8dcf8; }
+.mk-qty-in { width: 48px; height: 44px; box-sizing: border-box; padding: 0; border: 0; background: none; text-align: center; font: inherit; font-size: 18px; font-weight: 600; color: #222; }
+.mk-btn { height: 48px; padding: 0 20px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 8px; background: var(--mk-cta); color: #fff; font-weight: 600; font-size: 16px; text-decoration: none; cursor: pointer; }
+.mk-btn:hover { background: #2a7bf0; }
+.mk-btn-cart { flex: 1; min-width: 0; }
+.mk-ico-inv { filter: brightness(0) invert(1); }
+.mk-incart-lg { flex: 1; align-self: stretch; max-width: none; height: auto; padding: 0 16px; border-radius: 8px; font-size: 14px; line-height: 18px; }
+.mk-link { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; margin-top: 4px; padding: 4px 0; border: 0; background: none; color: var(--mk-navy, #002d72); font-weight: 600; cursor: pointer; }
+.mk-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.mk-pdp-facts { display: grid; grid-template-columns: max-content 1fr; gap: 6px 24px; margin: 24px 0 0; }
+.mk-pdp-facts dt { color: #666; }
+.mk-pdp-facts dd { margin: 0; font-weight: 500; }
+
+.mk-pdp-tabs { margin-top: 48px; }
+.mk-tablist { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--mk-line); }
+.mk-tablist::-webkit-scrollbar { display: none; }
+.mk-tablist button { flex: none; height: 44px; padding: 0 20px; border: 0; border-bottom: 3px solid transparent; background: none; color: #444; font-weight: 500; cursor: pointer; }
+.mk-tablist button:hover { background: #f6f6f6; }
+.mk-tablist button.on { border-bottom-color: var(--mk-cta); color: #002d72; font-weight: 600; }
+.mk-tabpanel { max-width: 860px; padding: 24px 0 0; }
+.mk-tabpanel h2 { margin: 0 0 12px; font-size: 20px; line-height: 28px; font-weight: 600; color: #444; }
+.mk-tabpanel h3 { margin: 20px 0 4px; font-size: 14px; line-height: 18px; font-weight: 600; }
+.mk-tabpanel p { margin: 0 0 8px; line-height: 22px; }
+.mk-table { width: 100%; max-width: 560px; border-collapse: collapse; margin: 8px 0; }
+.mk-table th, .mk-table td { padding: 8px 0; border-bottom: 1px solid #e8e8e8; text-align: left; font-weight: 400; vertical-align: top; }
+.mk-table th { color: #666; padding-right: 24px; width: 50%; }
+.mk-table td { font-weight: 500; }
+
+.mk-rail-sec { margin-top: 48px; }
+.mk-rail-sec h2 { margin: 0 0 16px; font-size: 20px; line-height: 28px; font-weight: 600; color: #444; }
+.mk-rail { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin; }
+.mk-rail > li { flex: none; width: 205px; }
+
+@media (max-width: 960px) {
+  .mk-pdp-top { grid-template-columns: 1fr; gap: 24px; }
+  .mk-pdp-media { max-width: none; }
+  .mk-pdp-img { aspect-ratio: 4 / 3; }
+}
+@media (max-width: 576px) {
+  .mk-pdp-name { font-size: 24px; line-height: 28px; }
+  .mk-pdp-buyrow { flex-direction: column; }
+  .mk-qty { align-self: stretch; justify-content: space-between; }
+  .mk-qty-in { flex: 1; }
+  .mk-rail > li { width: 164px; }
+  .mk-pdp-facts { grid-template-columns: 1fr; gap: 0; }
+  .mk-pdp-facts dd { margin-bottom: 8px; }
+}

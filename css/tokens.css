@@ -1,0 +1,62 @@
+/* Design tokens – values measured on the registration prototype so both prototypes match. */
+:root {
+  --navy: #002f6c;
+  --yellow: #ffe500;
+  --blue: #0463e0;
+  --blue-hover: #2a7bf0;
+  --blue-press: #1a6be0;
+  --soft: #dbe8fb;
+  --soft-hover: #c8dcf8;
+  --blue-link: #0a3d91;
+  --ink: #3a3a3c;
+  --ink-strong: #1f1f21;
+  --muted: #6b6f76;
+  --line: #d5d8dd;
+  --panel: #f5f5f5;
+  --info: #f0f3fb;
+  --ok: #1a8a5a;
+  --err: #d6283a;
+  --warn: #c26a00;
+  --disabled-bg: #d3d3d3;
+  --disabled-text: #7c7c7c;
+  --role-bg: #ffd84d;
+  --role-text: #3d2f00;
+  --overlay: rgba(0, 20, 48, .6);
+
+  --font: "Inter", system-ui, sans-serif;
+  --heading: #444;
+  --fs-base: 14px;
+  --fs-small: 12px;
+  --fs-lbl: 13px;
+  --fs-btn: 13px;
+  --fs-title: 28px;
+  --lh-title: 32px;
+  --fs-h2: 14px;
+  --lh-h2: 20px;
+  --strong: 600;
+  --field-h: 44px;
+  --header-h: 88px;
+  --hdr-pad: clamp(16px, 5vw, 96px);
+}
+
+/* makro.cz typography theme (Prototype scenarios → Typography, or ?type=makro) */
+html[data-type="makro"] {
+  --font: "Lato", Inter, system-ui, sans-serif;
+  --ink: #33435b;
+  --heading: #002d72;
+  --fs-base: 16px;
+  --fs-small: 14px;
+  --fs-lbl: 16px;
+  --fs-btn: 18px;
+  --fs-title: 32px;
+  --lh-title: 41px;
+  --fs-h2: 16px;
+  --lh-h2: 24px;
+  --strong: 700;
+  --field-h: 48px;
+}
+
+@media (max-width: 768px) {
+  :root { --header-h: 64px; --hdr-pad: 12px; --fs-title: 24px; --lh-title: 28px; }
+  html[data-type="makro"] { --fs-title: 28px; --lh-title: 36px; }
+}

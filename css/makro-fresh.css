@@ -1,0 +1,31 @@
+/* makro restyle of the Fresh design system, part 2: CSS layer on top of vendor/kosik-ui-base.css.
+   Fresh is themed through CSS variables (ds-context-*), so makro blue replaces the Kosik purple here
+   without forking any component. Radius is zeroed in js/makro-theme.js; arbitrary radii below. */
+:root {
+  --ds-context-primary: var(--blue);
+  --ds-context-off-mid: var(--blue-hover);
+  --ds-context-mid: #9dbdf0;
+  --ds-context-tertiary: var(--soft);
+  --ds-context-off-light: var(--soft-hover);
+  --ds-icon-fill-primary: var(--navy);
+  --ds-icon-fill-secondary: #9dbdf0;
+}
+
+/* Arbitrary radii that Fresh components hard-code (tw-rounded-[14px] etc.) cannot be reached from the Tailwind theme.
+   Square them here; true circles (50%) are kept. */
+[class*="tw-rounded-["]:not([class*="tw-rounded-[50"]) { border-radius: 0 !important; }
+
+/* Dropdown entries (Potraviny, Nepotravinové zboží, sorting): light-blue hover */
+[role="menu"], [role="menu"] * { font-family: Inter, system-ui, sans-serif; }
+[role="menuitem"][data-highlighted], [role="menuitem"]:hover { background: #eaf2fd !important; }
+
+/* Fresh utility colours that carry the Kosik purple (used inside several components). The html body prefix
+   outweighs the runtime-generated Tailwind rules. */
+html body .tw-text-ds-primary, html body .tw-text-ds-link { color: var(--navy); }
+html body .tw-text-ds-link { color: var(--blue-link); }
+html body .tw-bg-ds-primary { background-color: var(--blue); }
+html body .tw-bg-ds-primary-off-light, html body .tw-bg-ds-secondary { background-color: var(--soft); }
+html body .tw-border-ds-primary { border-color: var(--blue); }
+html body [data-cid="ds-breadcrumbs-separator"] { color: var(--blue); --ds-icon-fill-primary: var(--blue); }
+html body [data-cid="ds-breadcrumbs-separator"] * { fill: var(--blue); }
+

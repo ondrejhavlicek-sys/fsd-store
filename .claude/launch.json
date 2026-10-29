@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "fsd-store",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["serve.py", "5190"],
+      "port": 5190
+    }
+  ]
+}

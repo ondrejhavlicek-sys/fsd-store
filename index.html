@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>makro</title>
+    <link rel="icon" href="assets/favicon.png" />
+    <link rel="stylesheet" href="vendor/inter.css" />
+    <link rel="stylesheet" href="vendor/kosik-ui-base.css" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/makro-fresh.css" />
+    <link rel="stylesheet" href="css/chrome.css" />
+    <link rel="stylesheet" href="css/store.css" />
+    <link rel="stylesheet" href="css/product.css" />
+    <link rel="stylesheet" href="css/home.css" />
+    <link rel="stylesheet" href="css/cart.css" />
+    <link rel="stylesheet" href="css/checkout.css" />
+    <script src="vendor/vue.global.js"></script>
+    <script src="vendor/kosik-ui.js"></script>
+    <script src="vendor/tailwind-play.js"></script>
+    <script src="vendor/tailwind-setup.js"></script>
+    <script src="js/makro-theme.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <a href="#" class="mk-skip" @click.prevent="focusMain">Přeskočit na obsah</a>
+      <makro-header
+        v-model="query"
+        :cart-count="totals.lines"
+        :cart-net="totals.net"
+        :cart-gross="totals.gross"
+        :cart-open="cartOpen"
+        @search="soon('Vyhledávání')"
+        @address="soon('Výběr dodací adresy')"
+        @notifications="soon('Oznámení')"
+        @user-menu="soon('Menu účtu')"
+        @cart-toggle="cartOpen = !cartOpen"
+        @checkout="goCart"
+        @shopping-lists="soon('Nákupní seznamy')"
+        @repeat-order="soon('Zopakování objednávky')"
+        @navigate="soon('Navigace')">
+        <template #cart><makro-cart-preview @close="closeCart(true)" @open-cart="goCart"></makro-cart-preview></template>
+      </makro-header>
+      <router-view></router-view>
+      <makro-footer @link="soon('Odkaz v patičce')"></makro-footer>
+      <div v-if="store.toast" class="mk-toast" role="status">{{ store.toast }}</div>
+    </div>
+
+    <script src="js/fresh.js"></script>
+    <script src="components/makro-chrome.js"></script>
+    <script src="js/store.js"></script>
+    <script src="components/makro-product-box.js"></script>
+    <script src="components/makro-cart-preview.js"></script>
+    <script src="components/makro-category-page.js"></script>
+    <script src="components/makro-product-page.js"></script>
+    <script src="components/makro-home-page.js"></script>
+    <script src="components/makro-cart-page.js"></script>
+    <script src="components/makro-checkout-page.js"></script>
+    <script>
+      const { createRouter, createWebHashHistory } = KosikUI.vueRouter
+      const M = window.Makro
+
+      const app = Vue.createApp({
+        setup() {
+          const query = Vue.ref('')
+          const totals = Vue.computed(() => M.totals())
+          const cartOpen = Vue.ref(false)
+          /* close the preview; give focus back to the header cart button when asked (Escape, close button) */
+          const closeCart = (refocus) => {
+            if (!cartOpen.value) return
+            cartOpen.value = false
+            if (refocus) Vue.nextTick(() => document.querySelector('.mk-cart-btn')?.focus())
+          }
+          const goCart = () => { closeCart(false); location.hash = '#/kosik' }
+          Vue.onMounted(() => {
+            document.addEventListener('pointerdown', (e) => { if (cartOpen.value && !e.target.closest('.mk-cart')) closeCart(false) })
+            window.addEventListener('hashchange', () => closeCart(false))
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCart(true) })
+          })
+          const focusMain = () => { const m = document.querySelector('main'); if (m) { m.setAttribute('tabindex', '-1'); m.focus() } }
+          return { query, totals, cartOpen, closeCart, goCart, focusMain, store: M.store, soon: (what) => M.toast(what + ' zatím není součástí prototypu.') }
+        },
+      })
+      app.component('MakroCartPreview', M.CartPreview)
+      KosikUI.install(app)
+      app.component('MakroHeader', ProtoKit.MakroHeader)
+      app.component('MakroFooter', ProtoKit.MakroFooter)
+      const router = createRouter({
+          history: createWebHashHistory(),
+          scrollBehavior: () => ({ top: 0 }),
+          routes: [
+            { path: '/produkt/:id', component: M.ProductPage, props: true },
+            { path: '/kosik', component: M.CartPage },
+            { path: '/pokladna', component: M.CheckoutPage },
+            { path: '/objednavka', component: M.OrderDonePage },
+            { path: '/kategorie/:slug', component: M.CategoryPage },
+            { path: '/:pathMatch(.*)*', component: M.HomePage },
+          ],
+      })
+      /* page titles and focus: set the document title per route; after navigating inside the app move focus to the page */
+      const titles = (to) => {
+        if (to.path.startsWith('/produkt/')) return (M.byId(to.params.id) || {}).name || 'Produkt nenalezen'
+        if (to.path === '/kosik') return 'Košík'
+        if (to.path === '/pokladna') return 'Rekapitulace objednávky'
+        if (to.path === '/objednavka') return 'Objednávka'
+        if (to.path.startsWith('/kategorie/')) return M.category.title
+        return 'Úvodní stránka'
+      }
+      router.afterEach((to, from) => {
+        document.title = titles(to) + ' | makro'
+        if (from.matched.length) Vue.nextTick(() => { const m = document.querySelector('main'); if (m) { m.setAttribute('tabindex', '-1'); m.focus({ preventScroll: true }) } })
+      })
+      app.use(router)
+      // Tailwind Play generates the DS classes asynchronously; mount once the first ones exist
+      Fresh.ready.then(() => app.mount('#app'))
+    </script>
+  </body>
+</html>
