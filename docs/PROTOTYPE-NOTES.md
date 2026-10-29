@@ -56,4 +56,4 @@ Search suggestions and results, category mega-menu, Filtry drawer, shopping list
 14. **Languages**: CS only today; EN and VI planned in the handoff but not started.
 15. **Connection to the selfcare prototype**: link out only (decided), but the two prototypes are not hosted together yet.
 16. **Hosting and file size**: about 3 MB of vendor files. Hosting limits unknown.
-17. **Public repository.** `vendor/` holds Košík's Fresh design system and Vue/Tailwind builds, and `docs/ESHOP-PROJECT-HANDOFF.md` mentions internal paths, IDs and hosts. Decide what may be public before anything is committed.
+17. **Public repository.** `vendor/` (Košík's Fresh design system, Vue and Tailwind builds) is committed so the site runs from a plain static host. Confirm that Fresh may be public. The handoff document with internal paths, IDs and hosts is deliberately not committed.
