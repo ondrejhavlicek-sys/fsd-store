@@ -1,0 +1,37 @@
+/* copied from fsd-selfcare @ f2a58c7 (css/shop.css), do not edit upstream here; re-run selfcare/tools/sync.py to update; generated: every selector is scoped with :where(.sc); unused shell rules dropped */
+:where(.sc) .am { width: 320px; margin: -16px; max-width: calc(100vw - 32px); font-family: var(--font); font-size: var(--fs-base); color: var(--navy); }
+:where(.sc) .am-title { padding: 10px 16px; font-weight: 700; color: var(--navy); }
+:where(.sc) .am-co { display: flex; gap: 12px; align-items: center; padding: 12px 16px; background: var(--soft); color: var(--navy); text-decoration: none; }
+:where(.sc) .am-co:hover { background: #eaf2fd; }
+:where(.sc) .am-co span { display: grid; min-width: 0; }
+:where(.sc) .am-co b { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:where(.sc) .am-co small { font-size: var(--fs-small); color: var(--ink); }
+:where(.sc) .am-links { display: grid; padding: 8px 0; }
+:where(.sc) .am-links a { padding: 7px 16px; color: var(--navy); text-decoration: none; }
+:where(.sc) .am-links a:hover, :where(.sc) .am-out:hover, :where(.sc) .am-act:hover { background: #eaf2fd; }
+:where(.sc) .am-act, :where(.sc) .am-out { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; text-align: left; padding: 9px 16px; font: inherit; color: var(--navy); cursor: pointer; }
+:where(.sc) .am-act { background: #efefef; font-weight: 700; border-top: 1px solid #fff; }
+:where(.sc) .am-out { background: #fff; border-top: 1px solid var(--line); }
+:where(.sc) .am .am-ico { width: 20px; height: 20px; flex: none; }
+:where(.sc) .am-user { display: flex; align-items: center; gap: 12px; padding: 16px 16px 4px; }
+:where(.sc) .am-user b { font-weight: 700; }
+:where(.sc) .am a:focus-visible, :where(.sc) .am button:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+:where(.sc).addr-drawer [data-cid="ds-drawer-close-button"], :where(.sc) .addr-drawer [data-cid="ds-drawer-close-button"], :where(.sc).addr-drawer button[aria-label*="avřít"], :where(.sc) .addr-drawer button[aria-label*="avřít"], :where(.sc).addr-drawer button[aria-label*="lose"], :where(.sc) .addr-drawer button[aria-label*="lose"] { border-radius: 50% !important; border: 1.5px solid var(--ink-strong); }
+:where(.sc) .ad-list { display: grid; gap: 12px; padding: 4px 0; }
+:where(.sc) .ad-card { display: block; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.08), 0 0 4px rgba(0,0,0,.06); cursor: pointer; font-family: var(--font); }
+:where(.sc) .ad-card:focus-within { outline: 2px solid var(--blue); outline-offset: 2px; }
+:where(.sc) .ad-card.on { box-shadow: 0 0 0 2px var(--navy), 0 2px 4px rgba(0,0,0,.08); }
+:where(.sc) .ad-area { display: block; background: #f3d9b1; color: #5c3200; text-align: center; font-weight: 700; font-size: var(--fs-small); padding: 4px 8px; border-bottom: 2px solid #c26a00; }
+:where(.sc) .ad-row { display: flex; align-items: center; gap: 14px; padding: 14px 16px; }
+:where(.sc) .ad-pin { width: 44px; height: 44px; background: #f1f1f1; display: grid; place-items: center; flex: none; }
+:where(.sc) .ad-pin .ad-pin-ico { width: 24px; height: 24px; color: var(--navy); }
+:where(.sc) .ad-txt { display: grid; gap: 2px; flex: 1; min-width: 0; color: var(--ink-strong); font-size: var(--fs-base); line-height: 1.4; }
+:where(.sc) .ad-name { color: var(--blue); font-weight: 600; }
+:where(.sc) .ad-contact { font-weight: 700; }
+:where(.sc) .ad-line { overflow-wrap: anywhere; }
+:where(.sc) .ad-phone { color: var(--ink); }
+:where(.sc) .ad-main { justify-self: start; margin-top: 4px; }
+:where(.sc) .ad-empty { display: grid; gap: 12px; justify-items: start; padding: 16px 0; color: var(--ink-strong); }
+:where(.sc) .ad-confirm { display: grid; gap: 16px; }
+:where(.sc) .ad-confirm-addr { color: var(--ink-strong); }
+:where(.sc) .ad-confirm-btns { display: grid; gap: 8px; }

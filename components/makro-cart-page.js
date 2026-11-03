@@ -47,7 +47,7 @@
       const clear = () => { Makro.clearCart(); Makro.toast('Košík je vyprázdněný.') }
       const usual = Vue.computed(() => Makro.products.filter((p) => !store.cart[p.id] && p.cat === 'ovoce' && p.today).slice(0, 7))
 
-      return { store, lines, sum, missing, slots: Makro.slots, slotKey, delivery: Makro.delivery, min: Makro.minOrder, accepted, showTermsError, proceed, code, quick, quickAdd, setQty, typed, soon, clear, usual, kc: Makro.kc, num: Makro.num, openProduct: Makro.openProduct, src: (n) => base() + 'assets/' + n }
+      return { changeAddress: () => window.AddrDrawer && window.AddrDrawer.open(), store, lines, sum, missing, slots: Makro.slots, slotKey, delivery: Makro.delivery, min: Makro.minOrder, accepted, showTermsError, proceed, code, quick, quickAdd, setQty, typed, soon, clear, usual, kc: Makro.kc, num: Makro.num, openProduct: Makro.openProduct, src: (n) => base() + 'assets/' + n }
     },
     template: `
       <main class="mk-wrap mk-page mk-cartpage" data-tid="cart-page">
@@ -85,7 +85,7 @@
                 <label class="mk-field"><span>Datum a čas doručení</span>
                   <select v-model.number="slotKey"><option v-for="(s, i) in slots" :key="i" :value="i">{{ s.date }}, {{ s.slot }}</option></select>
                 </label>
-                <div class="mk-field"><span>Doručovací adresa</span><div class="mk-addr-val">{{ delivery.address }} <button type="button" class="mk-link" @click="soon('Změna adresy')">Změnit</button></div></div>
+                <div class="mk-field"><span>Doručovací adresa</span><div class="mk-addr-val">{{ delivery.address }} <button type="button" class="mk-link" @click="changeAddress">Změnit</button></div></div>
               </div>
             </section>
 

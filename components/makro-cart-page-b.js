@@ -70,7 +70,7 @@
       const typed = (id, e) => { const n = parseInt(e.target.value, 10); Makro.setQty(id, isNaN(n) ? 0 : n); e.target.value = store.cart[id] || 0 }
       const usual = Vue.computed(() => Makro.products.filter((p) => !store.cart[p.id] && p.cat === 'ovoce' && p.today).slice(0, 7))
 
-      return { store, sum, groups, saved, hasWeighed, headTotal, split, missing, pct, left, slots: Makro.slots, slotKey, delivery: Makro.delivery, min: Makro.minOrder, accepted, showTermsError, proceed, code, quick, quickAdd, menuOpen, soon, clear, typed, usual, setQty: Makro.setQty, setVat: Makro.setVat, plural: Makro.plural, kc: Makro.kc, num: Makro.num, src: (n) => base() + 'assets/' + n }
+      return { changeAddress: () => window.AddrDrawer && window.AddrDrawer.open(), store, sum, groups, saved, hasWeighed, headTotal, split, missing, pct, left, slots: Makro.slots, slotKey, delivery: Makro.delivery, min: Makro.minOrder, accepted, showTermsError, proceed, code, quick, quickAdd, menuOpen, soon, clear, typed, usual, setQty: Makro.setQty, setVat: Makro.setVat, plural: Makro.plural, kc: Makro.kc, num: Makro.num, src: (n) => base() + 'assets/' + n }
     },
     template: `
       <div class="mk-cb" data-tid="cart-page-b">
@@ -159,7 +159,7 @@
               <section class="mk-cb-card mk-cb-deliv" aria-labelledby="cb-del">
                 <h2 id="cb-del">Doručení</h2>
                 <label class="mk-cb-field"><span>Datum a čas doručení</span><select v-model.number="slotKey"><option v-for="(s, i) in slots" :key="i" :value="i">{{ s.date }}, {{ s.slot }}</option></select></label>
-                <p class="mk-cb-addr">{{ delivery.address }} <button type="button" class="mk-link" @click="soon('Změna adresy')">Změnit</button></p>
+                <p class="mk-cb-addr">{{ delivery.address }} <button type="button" class="mk-link" @click="changeAddress">Změnit</button></p>
                 <p class="mk-cb-clock"><span>Do uzávěrky objednávek zbývá</span><b role="timer">{{ left }}</b></p>
               </section>
 

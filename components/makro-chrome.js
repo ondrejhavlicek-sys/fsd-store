@@ -24,9 +24,8 @@
     props: {
       /** search term (v-model) */
       modelValue: { type: String, default: '' },
+      /** fallback label when the account area (selfcare/bridge.js) is not loaded; otherwise the selected delivery address is shown */
       deliveryAddress: { type: String, default: 'Evropská 2758/11, Praha 6' },
-      /** initials in the account button */
-      userInitials: { type: String, default: 'JM' },
       notificationCount: { type: Number, default: 0 },
       cartCount: { type: Number, default: 0 },
       /** cart total without VAT, in CZK */
@@ -40,7 +39,7 @@
       /** simplified header (logo, search, account) as on the Košík.cz basket page: no address and no navigation bar */
       simple: { type: Boolean, default: false },
     },
-    emits: ['update:modelValue', 'search', 'address', 'notifications', 'user-menu', 'cart-toggle', 'checkout', 'navigate', 'repeat-order', 'shopping-lists'],
+    emits: ['update:modelValue', 'search', 'address', 'notifications', 'account-open', 'cart-toggle', 'checkout', 'navigate', 'repeat-order', 'shopping-lists'],
     setup(props, { emit }) {
       const term = Vue.computed({ get: () => props.modelValue, set: (v) => emit('update:modelValue', v) })
       const submit = () => emit('search', props.modelValue)
@@ -160,15 +159,42 @@
       })
       Vue.watch(() => props.cartOpen, (v) => v && closeMenu(false))
 
-      return { ICONS, term, submit, money, pop, popLeft, togglePop, closePop, roots, openRoot, activeGroup, group, subEl, navBottom, hoverOpen, hoverLeave, clearTimer, toggleRoot, rootDown, listKey, closeMenu, go, hrefFor, thumb: (n) => THUMBS[n], src: (name) => base() + 'assets/' + name }
+      /* ---- delivery address (selfcare/bridge.js: App.S.addressId is the single source of truth) and the address drawer ---- */
+      const addr = Vue.computed(() => (window.App && window.App.S.addresses ? window.App.addrParts() : { name: '', line: props.deliveryAddress }))
+      const addrFull = Vue.computed(() => (addr.value.name ? addr.value.name + ' · ' : '') + addr.value.line)
+      const addrOpen = Vue.computed(() => (window.AddrDrawer ? window.AddrDrawer.isOpen() : false))
+
+      /* ---- company profile button: the account menu is a Fresh island from the selfcare prototype (selfcare/js/acctmenu.js).
+         The wrapper below is empty for Vue; the island placeholder inside it is created by hand, so Vue never patches the island's DOM. ---- */
+      const coBox = Vue.ref(null)
+      let closing = false
+      const closeAccount = () => { const b = coBox.value && coBox.value.querySelector('.co-btn[aria-expanded="true"]'); if (b) { closing = true; b.click(); closing = false } }
+      /* opening the account menu closes the other popovers (they close it the same way) */
+      const onAccountClick = () => { if (closing) return; closeMenu(false); closePop(false); emit('account-open') }
+      Vue.watch(openRoot, (v) => v !== null && closeAccount())
+      Vue.watch(pop, (v) => v && closeAccount())
+      Vue.watch(() => props.cartOpen, (v) => v && closeAccount())
+      const mql = matchMedia('(max-width: 768px)')
+      const onMq = () => window.AcctMenu && window.AcctMenu.sync()
+      Vue.onMounted(() => {
+        if (!window.AcctMenu || !coBox.value) return
+        const slot = document.createElement('div')
+        coBox.value.appendChild(slot)
+        window.AcctMenu.sync()
+        window.AcctMenu.attach(slot)
+        mql.addEventListener('change', onMq)
+      })
+      Vue.onUnmounted(() => { mql.removeEventListener('change', onMq); if (window.AcctMenu) window.AcctMenu.detach() })
+
+      return { addr, addrFull, addrOpen, coBox, onAccountClick, ICONS, term, submit, money, pop, popLeft, togglePop, closePop, roots, openRoot, activeGroup, group, subEl, navBottom, hoverOpen, hoverLeave, clearTimer, toggleRoot, rootDown, listKey, closeMenu, go, hrefFor, thumb: (n) => THUMBS[n], src: (name) => base() + 'assets/' + name }
     },
     template: `
       <header class="mk-header" :class="{ 'is-simple': simple }" data-tid="app-header">
         <div class="mk-top">
           <div class="mk-wrap mk-top-in">
             <a class="mk-logo" href="#/" aria-label="makro"><img :src="src('brand/makro-logo.svg')" alt="makro" width="129" height="32"></a>
-            <button v-if="!simple" type="button" class="mk-addr" @click="$emit('address')">
-              <span class="mk-addr-txt"><small>Vybraná dodací adresa</small><b>{{ deliveryAddress }}</b></span>
+            <button v-if="!simple" type="button" class="mk-addr hdr-addr" aria-haspopup="dialog" :aria-expanded="addrOpen" :title="addrFull" @click="$emit('address')">
+              <span class="mk-addr-txt"><small>Vybraná dodací adresa</small><b><span v-if="addr.name" class="mk-addr-name">{{ addr.name }}</span><span class="mk-addr-line">{{ addr.line }}</span></b></span>
               <img :src="src('icons/chevron-right.svg')" alt="" width="20" height="20">
             </button>
             <form class="mk-search" role="search" @submit.prevent="submit">
@@ -181,11 +207,11 @@
                 <img :src="src('icons/bell.svg')" alt="" width="20" height="20">
                 <span v-if="notificationCount" class="mk-dot">{{ notificationCount }}</span>
               </button>
-              <button type="button" class="mk-circ mk-user" aria-label="Můj účet" @click="$emit('user-menu')">{{ userInitials }}</button>
+              <div class="mk-co sc" ref="coBox" @click.capture="onAccountClick"></div>
             </div>
           </div>
-          <button v-if="!simple" type="button" class="mk-addr-bar" @click="$emit('address')">
-            <span>Doručení: <b>{{ deliveryAddress }}</b></span>
+          <button v-if="!simple" type="button" class="mk-addr-bar deliv-bar" aria-haspopup="dialog" :aria-expanded="addrOpen" :title="addrFull" @click="$emit('address')">
+            <span>Doručení: <b><span v-if="addr.name" class="mk-addr-name">{{ addr.name }}</span><span class="mk-addr-line">{{ addr.line }}</span></b></span>
             <img :src="src('icons/chevron-right.svg')" alt="" width="18" height="18">
           </button>
         </div>
