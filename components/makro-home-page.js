@@ -88,16 +88,26 @@
 
         <section class="mk-hero" :class="'on-' + home.banners[slide].theme" aria-roledescription="carousel" aria-label="Aktuální nabídky">
           <div class="mk-slide" v-for="(b, i) in home.banners" :key="b.id" v-show="i === slide" :class="'t-' + b.theme" role="group" :aria-label="(i + 1) + ' z ' + home.banners.length">
+            <img v-if="b.art" class="mk-slide-art" :src="b.art" alt="" width="720" height="320">
+            <span v-if="b.theme === 'xmas'" class="mk-snow" aria-hidden="true"></span>
             <div class="mk-slide-txt">
               <span class="mk-kicker">{{ b.kicker }}</span>
               <h2>{{ b.title }}</h2>
               <p>{{ b.text }}</p>
+              <ul v-if="b.chips" class="mk-chips" aria-label="Vánoční kategorie"><li v-for="c in b.chips" :key="c"><button type="button" class="mk-chip" @click="soon('Kategorie „' + c + '“')">{{ c }}</button></li></ul>
               <button type="button" class="mk-btn" :class="b.theme === 'yellow' ? 'mk-btn-navy' : 'mk-btn-yellow'" @click="bannerAction(b)">{{ b.cta }}</button>
             </div>
           </div>
           <button type="button" class="mk-hero-nav prev" aria-label="Předchozí nabídka" @click="go(-1)"><img :src="src('icons/chevron-down.svg')" alt="" width="20" height="20"></button>
           <button type="button" class="mk-hero-nav next" aria-label="Další nabídka" @click="go(1)"><img :src="src('icons/chevron-down.svg')" alt="" width="20" height="20"></button>
           <div class="mk-dots" role="group" aria-label="Výběr nabídky"><button v-for="(b, i) in home.banners" :key="b.id" type="button" :aria-current="i === slide ? 'true' : undefined" :aria-label="'Nabídka ' + (i + 1)" :class="{ on: i === slide }" @click="slide = i"></button></div>
+        </section>
+
+        <section class="mk-cats" aria-labelledby="h-cats">
+          <h2 id="h-cats">Oblíbené kategorie</h2>
+          <ul class="mk-tiles">
+            <li v-for="t in home.tiles" :key="t.name"><button type="button" class="mk-tile" @click="tile(t)"><img :src="t.image" alt="" width="92" height="92"><span>{{ t.name }}</span></button></li>
+          </ul>
         </section>
 
         <div class="mk-h-split">
@@ -129,12 +139,6 @@
 
         <makro-product-rail title="Nedávno objednané položky" :products="order.lines.map((l) => l.p)" more="Zobrazit vše" @more="soon('Historie objednávek')"></makro-product-rail>
 
-        <section class="mk-cats" aria-labelledby="h-cats">
-          <h2 id="h-cats">Oblíbené kategorie</h2>
-          <ul class="mk-tiles">
-            <li v-for="t in home.tiles" :key="t.name"><button type="button" class="mk-tile" @click="tile(t)"><img :src="t.image" alt="" width="92" height="92"><span>{{ t.name }}</span></button></li>
-          </ul>
-        </section>
 
         <makro-product-rail v-for="g in home.promoGroups" :key="g.id" :title="g.title" :products="group(g)" @more="g.id === 'meat' ? goCategory() : soon('Seznam produktů')"></makro-product-rail>
 

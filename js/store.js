@@ -144,7 +144,7 @@
   /* ---------- homepage mock data ---------- */
   const home = {
     banners: [
-      { id: 'b1', theme: 'navy', kicker: 'Vánoce', title: 'Objednejte vánoční sortiment s předstihem', text: 'Cukrovinky, ryby, víno i dekorace. Dodáme přesně na vaši provozovnu.', cta: 'Zobrazit nabídku' },
+      { id: 'b1', theme: 'xmas', art: 'assets/hero/xmas-scene.svg', kicker: 'Vánoce', title: 'Objednejte vánoční sortiment s předstihem', text: 'Čokolády a cukrovinky, víno a šumivá vína, ryby i vánoční dekorace. Doručíme přesně na vaši provozovnu.', chips: ['Vánoční čokolády', 'Vánoční balíčky', 'Víno a šumivá vína', 'Vánoční dekorace a ozdoby', 'Vánoční stromky umělé'], cta: 'Zobrazit nabídku' },
       { id: 'b2', theme: 'blue', kicker: 'Akce týdne', title: 'Čerstvé ovoce za výhodné ceny', text: 'Vybrané druhy ovoce a zeleniny se slevou až 30 % do 2. 11.', cta: 'Zobrazit akce' },
       { id: 'b3', theme: 'yellow', kicker: 'Rychle a jednoduše', title: 'Zopakujte poslední objednávku jedním klikem', text: 'Stejné položky, stejná provozovna, nový termín dodání.', cta: 'Znovu objednat' },
     ],
