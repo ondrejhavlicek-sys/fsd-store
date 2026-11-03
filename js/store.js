@@ -81,11 +81,25 @@
   products.forEach((p) => (p.gross = gross(p.net), p.oldGross = p.old ? gross(p.old) : null))
 
   /* ---------- product detail extras (all mock) ---------- */
-  const BRAND = { p1: 'METRO Chef', p2: 'PRANTL', p3: 'KOSTELECKÉ UZENINY', p4: 'PRANTL', p5: 'PRANTL', p6: 'METRO Chef', p8: 'PRANTL', p9: 'PRANTL', p10: 'PRANTL', p14: 'BERLINKI' }
+  const BRAND = { p1: 'METRO Chef', p2: 'PRANTL', p3: 'KOSTELECKÉ UZENINY', p4: 'PRANTL', p5: 'PRANTL', p6: 'METRO Chef', p7: 'aro', p8: 'PRANTL', p9: 'PRANTL', p10: 'PRANTL', p11: 'METRO Chef', p12: 'aro', p13: 'KOSTELECKÉ UZENINY', p14: 'BERLINKI' }
+  const ORIGIN = { p7: 'Slovensko', p12: 'Polsko', p13: 'Slovensko', p14: 'Polsko' }
   products.forEach((p, i) => {
     p.brand = BRAND[p.id] || null
     p.supplierRef = String(329000 + i * 37)
-    p.origin = p.cat === 'ovoce' ? 'Dle aktuální nabídky' : 'Česká republika'
+    p.origin = p.cat === 'ovoce' ? 'Dle aktuální nabídky' : ORIGIN[p.id] || 'Česká republika'
+  })
+  /* attributes the category-page filters read (mock, invented; the drawer groups come from js/makro-filters.js).
+     contract = item of the customer's contract assortment (no "Vaše cena" marker shown yet) */
+  const CONTRACT = ['p1', 'p2', 'p4', 'p6', 'p10', 'p14']
+  const CERTS = { p2: ['KLASA'], p3: ['Česká Potravina'], p4: ['KLASA'], p8: ['KLASA'], p9: ['Česká Potravina'], p10: ['Česká Potravina', 'KLASA'], p13: ['Regionální potravina'] }
+  const NO_GLUTEN_NOT = ['p13', 'p14']
+  const NO_LACTOSE = ['p1', 'p2', 'p3', 'p4', 'p6', 'p8', 'p10']
+  products.forEach((p) => {
+    const meat = p.cat === 'masne'
+    p.weightKg = meat ? parseFloat(p.weight.replace(/[^0-9,]/g, '').replace(',', '.')) : null
+    p.contract = CONTRACT.includes(p.id)
+    p.certs = CERTS[p.id] || []
+    p.diet = meat ? [].concat(NO_GLUTEN_NOT.includes(p.id) ? [] : ['Bez lepku'], NO_LACTOSE.includes(p.id) ? ['Bez laktózy'] : []) : []
   })
   /* the next free delivery slot of the selected address (mock; today is Thu 29. 10. 2026) */
   const slots = [
@@ -100,7 +114,7 @@
       ? [p.name + '. Čerstvé ovoce vybírané podle kvality a zralosti, vhodné pro gastronomii i maloobchod.', 'Původ a odrůda se mohou podle aktuální nabídky lišit. Zboží uchovávejte v chladu a před konzumací omyjte.']
       : [
           p.name + '. Chlazený masný výrobek určený pro gastronomii a maloobchod, vhodný k ohřevu ve vodě nebo na grilu.',
-          'Vyrobeno z kvalitního masa, bez lepku. Výrobek je prodáván vážený; skutečná hmotnost se může od uvedené lišit a fakturuje se podle skutečné hmotnosti.',
+          'Vyrobeno z kvalitního masa. Výrobek je prodáván vážený; skutečná hmotnost se může od uvedené lišit a fakturuje se podle skutečné hmotnosti.',
         ],
     storage: p.cat === 'ovoce' ? 'Skladujte při teplotě od +8 °C do +12 °C.' : 'Skladujte při teplotě od 0 °C do +4 °C.',
     shelfLife: p.cat === 'ovoce' ? 'Minimální trvanlivost od doručení: 5 dní' : 'Minimální trvanlivost od doručení: 14 dní',

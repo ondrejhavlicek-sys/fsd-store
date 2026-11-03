@@ -1,0 +1,89 @@
+/* Category filters: toolbar chips and badge, "Filtry a řazení" drawer (right side) / bottom sheet (phones).
+   Markup: components/makro-category-page.js and components/makro-filters-drawer.js; state: js/makro-filters.js.
+   The container is the Fresh Drawer / BottomSheet (restyled to makro in makro-fresh.css); rows are own markup. */
+
+/* ---- toolbar: badge on the button, chips, "Zrušit filtry" ---- */
+.mk-fbtn { position: relative; }
+.mk-fbadge { min-width: 20px; height: 20px; box-sizing: border-box; padding: 0 5px; border-radius: 99px; background: var(--mk-navy, #002d72); color: #fff; font-size: 12px; line-height: 20px; font-weight: 600; text-align: center; }
+.mk-fpill .mk-fx { flex: none; margin-left: 2px; }
+.mk-fpill:disabled { color: #757575; background: #f6f6f6; cursor: not-allowed; }
+.mk-fpill:disabled img { opacity: .5; }
+.mk-fclear { min-height: 32px; padding: 0 8px; border: 0; border-radius: 8px; background: none; color: var(--mk-blue-link, #0a3d91); font-weight: 500; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; white-space: nowrap; }
+.mk-fclear:hover { background: #f6f6f6; }
+
+/* ---- drawer / sheet shell (Fresh DS classes are generated at runtime; the rest is here) ---- */
+.mk-fd { color: #222; font-size: 14px; line-height: 20px; }
+.mk-fd :focus-visible { outline: 2px solid var(--mk-cta); outline-offset: 2px; }
+.mk-fd ul { list-style: none; margin: 0; padding: 0; }
+.mk-fd fieldset { min-width: 0; margin: 0; border: 0; padding: 0; }
+.mk-fd [data-cid="ds-accordion-trigger"], .mk-fd [data-ds-accordion-trigger] { cursor: pointer; }
+.mk-fsheet { border-radius: 12px 12px 0 0 !important; max-height: 92vh !important; padding-bottom: 0 !important; }
+.mk-fsheet > * { margin-top: 0 !important; }
+.mk-fsheet [data-cid="ds-bottom-sheet-footer"] { padding-bottom: max(12px, env(safe-area-inset-bottom)); border-top: 1px solid var(--mk-line); }
+.mk-fsheet [data-cid="ds-bottom-sheet-actions"] { gap: 8px; }
+.mk-fbody { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding-inline: 8px; border-top: 1px solid var(--mk-line); overscroll-behavior: contain; }
+.mk-fdrawer [data-cid="ds-drawer-actions"] { flex-direction: row; }
+.mk-fdrawer [data-cid="ds-drawer-actions"] > * { flex: none; }
+@media (max-width: 768px) { .mk-fsheet [data-cid="ds-bottom-sheet-actions"] > * { width: 100%; } }
+
+/* ---- switches on top ---- */
+.mk-fd-toggles { border-bottom: 1px solid #e8e8e8; padding-block: 4px; }
+.mk-fd-row { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 48px; box-sizing: border-box; padding: 8px 16px; cursor: pointer; }
+.mk-fd-row.dis, .mk-fd-opt.dis { cursor: not-allowed; color: #757575; }
+.mk-fd-lbl { font-weight: 600; }
+.mk-fd-n { font-weight: 400; color: #666; }
+.dis .mk-fd-n { color: #757575; }
+.mk-switch, .mk-check, .mk-radio { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit; }
+.mk-switch-ui { position: relative; flex: none; width: 44px; height: 24px; border-radius: 99px; background: #8a8a8a; transition: background .15s; }
+.mk-switch-ui::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .15s; }
+.mk-switch:checked ~ .mk-switch-ui { background: var(--mk-cta); }
+.mk-switch:checked ~ .mk-switch-ui::after { transform: translateX(20px); }
+.mk-switch:disabled ~ .mk-switch-ui { opacity: .45; }
+.mk-switch:focus-visible ~ .mk-switch-ui, .mk-check:focus-visible ~ .mk-fd-ui, .mk-radio:focus-visible ~ .mk-fd-ui { outline: 2px solid var(--mk-cta); outline-offset: 2px; }
+
+/* ---- option lists ---- */
+.mk-fd-list { display: grid; padding-top: 4px; }
+.mk-fd-opt { position: relative; display: flex; align-items: flex-start; gap: 12px; min-height: 40px; box-sizing: border-box; padding: 9px 8px; border-radius: 8px; cursor: pointer; }
+.mk-fd-opt:hover:not(.dis) { background: #f6f6f6; }
+.mk-fd-ui { position: relative; flex: none; width: 20px; height: 20px; box-sizing: border-box; margin-top: 0; border: 2px solid #757575; border-radius: 4px; background: #fff; }
+.mk-fd-name { padding-top: 0; }
+.mk-check:checked ~ .mk-fd-ui, .mk-radio:checked ~ .mk-fd-ui { border-color: var(--mk-cta); background: var(--mk-cta); }
+.mk-check:checked ~ .mk-fd-ui::after { content: ''; position: absolute; left: 5px; top: 1px; width: 5px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.mk-radio ~ .mk-fd-ui { border-radius: 50%; }
+.mk-radio:checked ~ .mk-fd-ui { background: #fff; }
+.mk-radio:checked ~ .mk-fd-ui::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--mk-cta); }
+.mk-check:disabled ~ .mk-fd-ui { border-color: #bdbdbd; background: #f3f3f3; }
+.mk-fd-more { justify-self: start; min-height: 40px; margin-top: 2px; padding: 0 8px; border: 0; border-radius: 8px; background: none; color: var(--mk-blue-link, #0a3d91); font: inherit; font-weight: 600; cursor: pointer; }
+.mk-fd-more:hover { background: #f6f6f6; }
+.mk-fd-none { margin: 4px 8px 8px; color: #666; }
+.mk-fd-find { padding: 0 0 8px; }
+.mk-fd-find input { width: 100%; height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid var(--mk-line); border-radius: 8px; font: inherit; }
+
+/* ---- price ---- */
+.mk-fd-price { display: grid; gap: 12px; padding: 4px 8px 8px; }
+.mk-fd-vat { width: 100%; max-width: 255px; }
+.mk-fd-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mk-fd-num { display: flex; align-items: center; gap: 8px; height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid var(--mk-line); border-radius: 8px; background: #fff; }
+.mk-fd-num:focus-within { border-color: var(--mk-sel-border); outline: 2px solid var(--mk-cta); outline-offset: 2px; }
+.mk-fd-num .mk-fd-num-x, .mk-fd-num span { color: #666; }
+.mk-fd .mk-fd-num input:focus-visible { outline: 0; }
+.mk-fd-num input { flex: 1; min-width: 0; width: 100%; height: 100%; padding: 0; border: 0; outline: 0; background: none; font: inherit; font-weight: 600; color: #222; text-align: right; -moz-appearance: textfield; appearance: textfield; }
+.mk-fd-num input::-webkit-outer-spin-button, .mk-fd-num input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.mk-fd-slider { position: relative; height: 32px; margin: 4px 4px 0; }
+.mk-fd-track { position: absolute; left: 12px; right: 12px; top: 50%; height: 4px; margin-top: -2px; border-radius: 2px; background: #d3d3d3; }
+.mk-fd-track::after { content: ''; position: absolute; top: 0; bottom: 0; left: var(--from, 0%); right: var(--to, 0%); border-radius: 2px; background: var(--mk-cta); }
+.mk-fd-thumb { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; }
+.mk-fd-thumb.top { z-index: 3; }
+.mk-fd-thumb::-webkit-slider-runnable-track { height: 32px; background: transparent; }
+.mk-fd-thumb::-moz-range-track { height: 32px; background: transparent; }
+.mk-fd-thumb::-webkit-slider-thumb { -webkit-appearance: none; pointer-events: auto; width: 24px; height: 24px; margin-top: 4px; box-sizing: border-box; border: 2px solid var(--mk-cta); border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .25); cursor: grab; }
+.mk-fd-thumb::-moz-range-thumb { pointer-events: auto; width: 24px; height: 24px; box-sizing: border-box; border: 2px solid var(--mk-cta); border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .25); cursor: grab; }
+.mk-fd-thumb:focus-visible { outline: none; }
+.mk-fd-thumb:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--mk-cta); outline-offset: 2px; }
+.mk-fd-thumb:focus-visible::-moz-range-thumb { outline: 2px solid var(--mk-cta); outline-offset: 2px; }
+.mk-fd-ends { display: flex; justify-content: space-between; margin: -4px 4px 0; color: #666; font-size: 12px; line-height: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-switch-ui, .mk-switch-ui::after { transition: none; }
+  [data-cid="ds-drawer"], [data-cid="ds-drawer-overlay"], [data-cid="ds-bottom-sheet"], [data-vaul-drawer], [data-vaul-overlay] { animation: none !important; transition: none !important; }
+}
