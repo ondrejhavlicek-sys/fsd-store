@@ -33,7 +33,7 @@ Shell: header, navigation bar and footer from the Figma draft (`18:5299`, `18:53
 - **Sale tag** uses `#e01f56` from this draft (earlier selfcare work used `#990052`); one variable, `--mk-sale`.
 - Product 3 shows an unit price (93,00 Kč/kg) copied from the Figma that does not match its price.
 - Product photos are 206 px wide, soft when enlarged.
-- **Mega-menu**: only the category "Párky, špekáčky, točené salámy" opens a page; every other link shows a toast. Block thumbnails exist only for Ovoce and Masné výrobky, the rest show a letter placeholder because makro.cz category data has no images. Each block lists four children and "+ Další", as on Košík.cz.
+- **Mega-menu**: only the category "Párky, špekáčky, točené salámy" opens a page; every other link shows a toast. Block thumbnails exist only for Ovoce and Masné výrobky, the rest show a letter placeholder because makro.cz category data has no images. Each block lists four children and "+ Další", as on Košík.cz. The menu opens on hover (100 ms delay) and on click; a click pins it open until Esc, a click outside or on the overlay. The gray overlay copies Košík.cz: transparent at the nav bar, 15 % black from 20 vh below it (`--mk-backdrop-color` in `css/chrome.css`).
 - Contrast: a few colours were darkened from the Figma values to reach 4.5:1 (sale note text, unavailable text, form placeholders).
 
 ## Not built
