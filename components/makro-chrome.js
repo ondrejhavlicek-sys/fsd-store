@@ -56,16 +56,35 @@
       const focusList = () => Vue.nextTick(() => document.getElementById('mk-l1-' + activeGroup.value)?.focus())
       const closeMenu = (refocus) => {
         const i = openRoot.value
+        clearTimer()
+        pinned.value = false
         openRoot.value = null
         if (refocus && i !== null) Vue.nextTick(() => document.getElementById('mk-root-' + i)?.focus())
       }
+      /* Hover opens the menu after 100 ms and leaving closes it, as on Košík.cz. A click "pins" it open (stays until
+         click outside, the overlay, Esc or the trigger again); touch devices only use the click. */
+      const pinned = Vue.ref(false)
+      let timer = null
+      const clearTimer = () => { clearTimeout(timer); timer = null }
+      const later = (fn, ms) => { clearTimer(); timer = setTimeout(fn, ms) }
+      const isMouse = (e) => !e || !e.pointerType || e.pointerType === 'mouse'
+      const hoverOpen = (i, e) => {
+        if (!isMouse(e)) return
+        clearTimer()
+        if (openRoot.value === i) return
+        const set = () => { openRoot.value = i; activeGroup.value = 0 }
+        if (openRoot.value === null) later(set, 100); else set()
+      }
+      const hoverLeave = (e) => { if (isMouse(e) && !pinned.value && openRoot.value !== null) later(() => closeMenu(false), 150) }
       const toggleRoot = (i, e) => {
-        if (openRoot.value === i) return closeMenu(false)
+        clearTimer()
+        if (openRoot.value === i) { if (!pinned.value) { pinned.value = true; return } return closeMenu(false) }
         openRoot.value = i
         activeGroup.value = 0
+        pinned.value = true
         if (e && e.detail === 0) focusList() // opened from the keyboard
       }
-      const rootDown = (i) => { if (openRoot.value !== i) { openRoot.value = i; activeGroup.value = 0 } focusList() }
+      const rootDown = (i) => { clearTimer(); if (openRoot.value !== i) { openRoot.value = i; activeGroup.value = 0 } pinned.value = true; focusList() }
       const listKey = (e) => {
         const n = roots.value[openRoot.value].groups.length
         const move = { ArrowDown: 1, ArrowUp: -1 }[e.key]
@@ -79,19 +98,29 @@
       const onDoc = (e) => { if (openRoot.value !== null && !e.target.closest('.mk-sub')) closeMenu(false) }
       const onKey = (e) => { if (e.key === 'Escape' && openRoot.value !== null) closeMenu(true) }
       const onHash = () => closeMenu(false)
+      /* the overlay starts at the bottom edge of the navigation bar (it fades in below it, like Košík.cz) */
+      const subEl = Vue.ref(null)
+      const navBottom = Vue.ref(0)
+      const measure = () => { if (subEl.value) navBottom.value = Math.max(0, Math.round(subEl.value.getBoundingClientRect().bottom)) }
+      Vue.watch(openRoot, (v) => v !== null && Vue.nextTick(measure))
       Vue.onMounted(() => {
+        window.addEventListener('scroll', measure, { passive: true })
+        window.addEventListener('resize', measure)
         document.addEventListener('pointerdown', onDoc)
         document.addEventListener('keydown', onKey)
         window.addEventListener('hashchange', onHash)
       })
       Vue.onUnmounted(() => {
+        window.removeEventListener('scroll', measure)
+        window.removeEventListener('resize', measure)
+        clearTimer()
         document.removeEventListener('pointerdown', onDoc)
         document.removeEventListener('keydown', onKey)
         window.removeEventListener('hashchange', onHash)
       })
       Vue.watch(() => props.cartOpen, (v) => v && closeMenu(false))
 
-      return { ICONS, term, submit, money, roots, openRoot, activeGroup, group, toggleRoot, rootDown, listKey, closeMenu, go, hrefFor, thumb: (n) => THUMBS[n], src: (name) => base() + 'assets/' + name }
+      return { ICONS, term, submit, money, roots, openRoot, activeGroup, group, subEl, navBottom, hoverOpen, hoverLeave, clearTimer, toggleRoot, rootDown, listKey, closeMenu, go, hrefFor, thumb: (n) => THUMBS[n], src: (name) => base() + 'assets/' + name }
     },
     template: `
       <header class="mk-header" data-tid="app-header">
@@ -121,10 +150,10 @@
           </button>
         </div>
 
-        <div class="mk-sub">
+        <div class="mk-sub" ref="subEl">
           <div class="mk-wrap mk-sub-in">
             <nav class="mk-nav" aria-label="Hlavní navigace">
-              <button v-for="(r, i) in roots" :key="r.name" :id="'mk-root-' + i" type="button" class="mk-nav-item" :class="{ open: openRoot === i }" aria-controls="mk-mega" :aria-expanded="openRoot === i" @click="toggleRoot(i, $event)" @keydown.down.prevent="rootDown(i)">
+              <button v-for="(r, i) in roots" :key="r.name" :id="'mk-root-' + i" type="button" class="mk-nav-item" :class="{ open: openRoot === i }" aria-controls="mk-mega" :aria-expanded="openRoot === i" @click="toggleRoot(i, $event)" @keydown.down.prevent="rootDown(i)" @pointerenter="hoverOpen(i, $event)" @pointerleave="hoverLeave($event)">
                 <span>{{ r.name }}</span><component :is="ICONS.ChevronDownSolid" class="mk-chev tw-icon-ds-20"></component>
               </button>
               <button type="button" class="mk-nav-item" @click="$emit('shopping-lists')"><span>Nákupní seznamy</span><img :src="src('icons/shopping-list.svg')" alt="" width="24" height="24"></button>
@@ -142,7 +171,8 @@
             </div>
           </div>
 
-          <div v-if="group" id="mk-mega" class="mk-mega" role="region" :aria-label="roots[openRoot].name">
+          <div v-if="group" class="mk-mega-backdrop" :style="{ '--mk-nav-bottom': navBottom + 'px' }" aria-hidden="true" @pointerenter="hoverLeave($event)" @click="closeMenu(false)"></div>
+          <div v-if="group" id="mk-mega" class="mk-mega" role="region" :aria-label="roots[openRoot].name" @pointerenter="clearTimer" @pointerleave="hoverLeave($event)">
             <button type="button" class="mk-mega-x" aria-label="Zavřít menu" @click="closeMenu(true)">✕</button>
             <div class="mk-wrap mk-mega-in">
               <ul class="mk-mega-list" aria-label="Kategorie" @keydown="listKey">
