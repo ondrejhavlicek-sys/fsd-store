@@ -107,3 +107,34 @@
   .mk-rail-head { flex-wrap: wrap; row-gap: 4px; }
 }
 @media (prefers-reduced-motion: reduce) { .mk-os-bar > span { transition: none; } }
+
+/* ---- Christmas banner ---- */
+.mk-hero, .mk-slide { min-height: 300px; }
+.mk-slide { position: relative; overflow: hidden; }
+.t-xmas { background: radial-gradient(55% 95% at 76% 58%, rgba(255, 190, 90, .24), transparent 62%), radial-gradient(40% 60% at 8% 100%, rgba(10, 61, 145, .55), transparent 70%), linear-gradient(105deg, #001230 0%, #002d72 46%, #0b3d91 100%); color: #fff; }
+.t-xmas .mk-kicker { color: #ffd23f; }
+.mk-slide-art { position: absolute; right: 40px; bottom: -6px; height: 108%; width: auto; max-width: none; pointer-events: none; user-select: none; }
+.mk-slide-txt { position: relative; z-index: 2; }
+.mk-snow { position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .85; background-image: radial-gradient(2px 2px at 20px 30px, #fff, transparent), radial-gradient(2.4px 2.4px at 110px 90px, rgba(255, 255, 255, .9), transparent), radial-gradient(3px 3px at 200px 160px, rgba(255, 255, 255, .85), transparent), radial-gradient(1.6px 1.6px at 60px 200px, #fff, transparent), radial-gradient(2px 2px at 165px 245px, rgba(255, 255, 255, .9), transparent); background-size: 240px 280px; animation: mk-snowfall 16s linear infinite; }
+.mk-snow::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(1.4px 1.4px at 40px 60px, #fff, transparent), radial-gradient(1.8px 1.8px at 150px 20px, rgba(255, 255, 255, .8), transparent), radial-gradient(1.4px 1.4px at 90px 170px, #fff, transparent); background-size: 180px 210px; animation: mk-snowfall 9s linear infinite; }
+@keyframes mk-snowfall { to { background-position: 36px 280px; } }
+.mk-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; padding: 0; list-style: none; }
+.mk-chip { min-height: 32px; padding: 0 14px; border: 1px solid rgba(255, 255, 255, .55); border-radius: 99px; background: rgba(255, 255, 255, .1); color: #fff; font: inherit; font-size: 13px; line-height: 18px; cursor: pointer; }
+.mk-chip:hover { background: rgba(255, 255, 255, .22); }
+.mk-slide-txt { max-width: 600px; }
+.mk-cats { margin-top: -8px; }
+
+@media (max-width: 1100px) {
+  .mk-slide-art { right: -40px; opacity: .85; }
+  .t-xmas::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(0, 18, 48, .88) 35%, rgba(0, 18, 48, 0) 80%); pointer-events: none; }
+}
+@media (max-width: 768px) {
+  .mk-hero, .mk-slide { min-height: 300px; }
+  .t-xmas { min-height: 440px; align-items: flex-start; }
+  .mk-slide-art { height: 46%; right: -50px; bottom: 0; opacity: .95; }
+  .t-xmas::before { background: linear-gradient(180deg, rgba(0, 18, 48, .8) 55%, rgba(0, 18, 48, 0) 85%); }
+}
+@media (max-width: 576px) {
+  .mk-chips li:nth-child(n+4) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .mk-snow, .mk-snow::after { animation: none; } }
