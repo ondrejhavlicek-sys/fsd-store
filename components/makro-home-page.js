@@ -110,7 +110,7 @@
           </ul>
         </section>
 
-        <div class="mk-h-split">
+        <div v-if="$route.query.variant === 'cards'" class="mk-h-split">
           <section class="mk-card mk-lastorder" aria-labelledby="h-last">
             <h2 id="h-last">Poslední objednávka</h2>
             <div class="mk-lo-body">

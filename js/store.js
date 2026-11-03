@@ -150,6 +150,10 @@
     ],
     lastOrder: { no: '9-100000123', date: 'čt 22. 10. 2026', status: 'Doručeno', net: 2684.4, lines: [['p2', 2], ['f2', 12], ['f10', 4], ['f13', 6], ['f21', 3]] },
     lists: [{ id: 'l1', name: 'Týdenní nákup', count: 5 }, { id: 'l2', name: 'Víkendové menu', count: 4 }],
+    olderOrders: [
+      { no: '9-100000087', date: 'čt 15. 10. 2026', status: 'Doručeno', lines: [['p6', 4], ['f1', 6], ['f5', 5]] },
+      { no: '9-100000052', date: 'čt 8. 10. 2026', status: 'Doručeno', lines: [['f10', 10], ['f13', 20], ['p2', 2]] },
+    ],
     promoGroups: [
       { id: 'sale', title: 'Akce do 2. 11.', ids: ['f3', 'f4', 'f12', 'f20', 'p1', 'p3', 'f14'] },
       { id: 'fruit', title: 'Čerstvé ovoce', ids: ['f1', 'f2', 'f5', 'f6', 'f7', 'f8', 'f9'] },
@@ -183,9 +187,10 @@
     })
   }
   const minOrder = { net: 5000, fee: 500 }
-  const reorder = () => {
+  const recentOrders = () => [home.lastOrder].concat(home.olderOrders).map((o) => ({ ...o, net: round2(o.lines.reduce((a, [id, q]) => a + byId(id).net * q, 0)) }))
+  const reorder = (order) => {
     let n = 0
-    home.lastOrder.lines.forEach(([id, q]) => { setQty(id, (store.cart[id] || 0) + q); n++ })
+    ;(order || home.lastOrder).lines.forEach(([id, q]) => { setQty(id, (store.cart[id] || 0) + q); n++ })
     return n
   }
   /* ---------- checkout (mock) ---------- */
@@ -260,5 +265,5 @@
   let toastTimer
   const toast = (msg) => { store.toast = msg; clearTimeout(toastTimer); toastTimer = setTimeout(() => (store.toast = ''), 2600) }
 
-  Object.assign(Makro, { useCountdown, user, payments, placeOrder, slots, summary, clearCart, addByCode, categoryHash: '#/kategorie/parky-spekacky-tocene-salamy', home, deadline, minOrder, reorder, sausages, delivery, detail, similar, sameBrand, openProduct, VAT, num, kc: (n) => num(n) + nbsp + 'Kč', round2, gross, plural, category, products, store, byId, totals, setQty, setVat, toast })
+  Object.assign(Makro, { recentOrders, useCountdown, user, payments, placeOrder, slots, summary, clearCart, addByCode, categoryHash: '#/kategorie/parky-spekacky-tocene-salamy', home, deadline, minOrder, reorder, sausages, delivery, detail, similar, sameBrand, openProduct, VAT, num, kc: (n) => num(n) + nbsp + 'Kč', round2, gross, plural, category, products, store, byId, totals, setQty, setVat, toast })
 })()

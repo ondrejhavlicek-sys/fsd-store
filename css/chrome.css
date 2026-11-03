@@ -229,3 +229,42 @@
   .mk-mega-thumb, .mk-mega-thumb img { width: 64px; height: 64px; }
   .mk-mega-x { display: grid; place-items: center; position: sticky; top: 8px; z-index: 2; width: 36px; height: 36px; margin: 8px 12px -36px auto; padding: 0; border: 0; border-radius: 99px; background: #f2f4f8; color: #444; cursor: pointer; }
 }
+
+/* ---- navigation bar popovers: Nákupní seznamy, Poslední objednávky ---- */
+.mk-nav-item.pop-open { background: #e4e9f1; }
+.mk-pop { position: absolute; z-index: 52; top: calc(100% + 4px); width: 420px; max-width: calc(100vw - 32px); max-height: min(78vh, 640px); overflow: auto; box-sizing: border-box; padding: 16px; background: #fff; border: 1px solid #e9e9e9; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, .06), 0 8px 24px rgba(0, 20, 48, .14); animation: mk-fade .2s ease-out; }
+.mk-pop-backdrop { display: none; }
+.mk-pop-x { display: none; }
+.mk-np-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; font-size: 16px; line-height: 24px; }
+.mk-np-head b { font-weight: 600; }
+.mk-np-head .mk-more { font-size: 14px; }
+.mk-np-grid, .mk-np-orders { list-style: none; margin: 0; padding: 0; }
+.mk-np-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.mk-np-grid button { width: 100%; min-height: 88px; box-sizing: border-box; padding: 12px; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 6px; border-radius: 8px; text-align: left; font: inherit; cursor: pointer; }
+.mk-np-list { border: 0; background: var(--mk-sel-bg, #ddeafd); color: var(--mk-navy, #002d72); }
+.mk-np-list:hover { background: #c8dcf8; }
+.mk-np-list b { font-weight: 600; }
+.mk-np-list span { color: #444; font-size: 12px; line-height: 16px; }
+.mk-np-new { flex-direction: row !important; align-items: center !important; border: 1px dashed #9aacc6; background: #fff; color: var(--mk-navy, #002d72); font-weight: 600; }
+.mk-np-new:hover { background: #f2f4f8; }
+.mk-np-new b { font-size: 24px; line-height: 24px; font-weight: 400; }
+.mk-np-orders { display: flex; flex-direction: column; gap: 10px; }
+.mk-np-order { padding: 12px; border: 1px solid #e9e9e9; border-radius: 8px; display: flex; flex-direction: column; gap: 8px; }
+.mk-np-order:first-child { background: #f7f9fc; }
+.mk-np-order-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.mk-np-order-top b { font-weight: 600; }
+.mk-np-order-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; color: #444; font-size: 13px; line-height: 18px; }
+.mk-np-order-meta b { margin-left: auto; color: #222; font-size: 15px; font-weight: 600; }
+.mk-np-order-meta small { color: #666; font-size: 11px; }
+.mk-np-order-act { display: flex; gap: 8px; }
+.mk-np-btn { flex: 1; min-height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: #fff; color: var(--mk-navy, #002d72); box-shadow: inset 0 0 0 1px var(--mk-navy, #002d72); font: inherit; font-weight: 600; cursor: pointer; }
+.mk-np-btn:hover { background: #f2f4f8; }
+.mk-np-btn.primary { background: var(--mk-cta, #0064fe); color: #fff; box-shadow: none; }
+.mk-np-btn.primary:hover { background: #2a7bf0; }
+.mk-pop :focus-visible { outline: 2px solid var(--mk-blue, #005ae0); outline-offset: 2px; }
+@media (max-width: 768px) {
+  .mk-pop-backdrop { display: block; position: fixed; inset: 0; z-index: 48; background: rgba(0, 20, 48, .5); }
+  .mk-pop { position: fixed; z-index: 50; left: 0 !important; right: 0; bottom: 0; top: auto; width: auto; max-width: none; max-height: 80vh; border: 0; border-radius: 16px 16px 0 0; padding: 52px 16px 16px; }
+  .mk-pop-x { display: grid; place-items: center; position: absolute; top: 8px; right: 12px; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 99px; background: #f2f4f8; color: #444; cursor: pointer; }
+}
+@media (prefers-reduced-motion: reduce) { .mk-pop { animation: none; } }

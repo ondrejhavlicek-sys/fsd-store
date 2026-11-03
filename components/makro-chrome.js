@@ -99,14 +99,38 @@
       }
       const go = (label) => { emit('navigate', { label }); closeMenu(false) }
       const hrefFor = (label) => (label === IMPLEMENTED && window.Makro ? window.Makro.categoryHash : '#')
-      const onDoc = (e) => { if (openRoot.value !== null && !e.target.closest('.mk-sub')) closeMenu(false) }
+      /* ---- popovers of the nav items "Nákupní seznamy" and "Poslední objednávky" ---- */
+      const pop = Vue.ref(null)
+      const popLeft = Vue.ref(0)
+      const closePop = (refocus) => {
+        const k = pop.value
+        pop.value = null
+        if (refocus && k) Vue.nextTick(() => document.getElementById('mk-pop-btn-' + k)?.focus())
+      }
+      const togglePop = (k, e) => {
+        if (pop.value === k) return closePop(false)
+        closeMenu(false)
+        pop.value = k
+        Vue.nextTick(() => {
+          const btn = document.getElementById('mk-pop-btn-' + k), sub = subEl.value
+          if (btn && sub) popLeft.value = Math.max(0, Math.round(btn.getBoundingClientRect().left - sub.getBoundingClientRect().left))
+          if (e && e.detail === 0) document.querySelector('#mk-pop button, #mk-pop a')?.focus()
+        })
+      }
+      Vue.watch(openRoot, (v) => v !== null && closePop(false))
+      Vue.watch(() => props.cartOpen, (v) => v && closePop(false))
+      const onDoc = (e) => {
+        if (pop.value && !e.target.closest('#mk-pop, .mk-nav-item')) closePop(false)
+        if (openRoot.value !== null && !e.target.closest('.mk-sub')) closeMenu(false)
+      }
       const onKey = (e) => {
+        if (e.key === 'Escape' && pop.value) { closePop(true); return }
         if (e.key !== 'Escape' || openRoot.value === null) return
         // Esc inside the right side goes back to the list first, a second Esc closes the menu
         if (document.activeElement && document.activeElement.closest('.mk-mega-body')) { focusList(); return }
         closeMenu(true)
       }
-      const onHash = () => closeMenu(false)
+      const onHash = () => { closeMenu(false); closePop(false) }
       /* the overlay starts at the bottom edge of the navigation bar (it fades in below it, like Košík.cz) */
       const subEl = Vue.ref(null)
       const navBottom = Vue.ref(0)
@@ -136,7 +160,7 @@
       })
       Vue.watch(() => props.cartOpen, (v) => v && closeMenu(false))
 
-      return { ICONS, term, submit, money, roots, openRoot, activeGroup, group, subEl, navBottom, hoverOpen, hoverLeave, clearTimer, toggleRoot, rootDown, listKey, closeMenu, go, hrefFor, thumb: (n) => THUMBS[n], src: (name) => base() + 'assets/' + name }
+      return { ICONS, term, submit, money, pop, popLeft, togglePop, closePop, roots, openRoot, activeGroup, group, subEl, navBottom, hoverOpen, hoverLeave, clearTimer, toggleRoot, rootDown, listKey, closeMenu, go, hrefFor, thumb: (n) => THUMBS[n], src: (name) => base() + 'assets/' + name }
     },
     template: `
       <header class="mk-header" :class="{ 'is-simple': simple }" data-tid="app-header">
@@ -172,8 +196,8 @@
               <button v-for="(r, i) in roots" :key="r.name" :id="'mk-root-' + i" type="button" class="mk-nav-item" :class="{ open: openRoot === i }" aria-controls="mk-mega" :aria-expanded="openRoot === i" @click="toggleRoot(i, $event)" @keydown.down.prevent="rootDown(i)" @pointerenter="hoverOpen(i, $event)" @pointerleave="hoverLeave($event)">
                 <span>{{ r.name }}</span><component :is="ICONS.ChevronDownSolid" class="mk-chev tw-icon-ds-20"></component>
               </button>
-              <button type="button" class="mk-nav-item" @click="$emit('shopping-lists')"><span>Nákupní seznamy</span><img :src="src('icons/shopping-list.svg')" alt="" width="24" height="24"></button>
-              <button type="button" class="mk-nav-item" title="Zopakovat poslední objednávku" aria-label="Zopakovat poslední objednávku" @click="$emit('repeat-order')"><img :src="src('icons/rotate.svg')" alt="" width="24" height="24"><span>Zopakovat poslední objednávku</span></button>
+              <button id="mk-pop-btn-lists" type="button" class="mk-nav-item" :class="{ 'pop-open': pop === 'lists' }" aria-haspopup="true" aria-controls="mk-pop" :aria-expanded="pop === 'lists'" @click="togglePop('lists', $event)"><img :src="src('icons/shopping-list.svg')" alt="" width="24" height="24"><span>Nákupní seznamy</span></button>
+              <button id="mk-pop-btn-orders" type="button" class="mk-nav-item" :class="{ 'pop-open': pop === 'orders' }" aria-haspopup="true" aria-controls="mk-pop" :aria-expanded="pop === 'orders'" @click="togglePop('orders', $event)"><img :src="src('icons/orders.svg')" alt="" width="24" height="24"><span>Poslední objednávky</span></button>
             </nav>
             <div class="mk-cart">
               <button type="button" class="mk-cart-btn" aria-label="Náhled košíku" aria-haspopup="true" aria-controls="cart-preview" :aria-expanded="cartOpen" @click="$emit('cart-toggle')">
@@ -187,6 +211,12 @@
             </div>
           </div>
 
+          <div v-if="pop" class="mk-pop-backdrop" aria-hidden="true" @click="closePop(true)"></div>
+          <div v-if="pop" id="mk-pop" class="mk-pop" role="region" :aria-label="pop === 'lists' ? 'Nákupní seznamy' : 'Poslední objednávky'" :style="{ left: popLeft + 'px' }">
+            <button type="button" class="mk-pop-x" aria-label="Zavřít" @click="closePop(true)">✕</button>
+            <slot v-if="pop === 'lists'" name="lists" :close="closePop"></slot>
+            <slot v-else name="orders" :close="closePop"></slot>
+          </div>
           <div v-if="group" class="mk-mega-backdrop" aria-hidden="true" @pointerenter="hoverLeave($event)" @click="closeMenu(false)"></div>
           <div v-if="group" id="mk-mega" class="mk-mega" :class="{ 'is-first': openRoot === 0 }" role="region" :aria-label="roots[openRoot].name" @pointerenter="clearTimer" @pointerleave="hoverLeave($event)">
             <button type="button" class="mk-mega-x" aria-label="Zavřít menu" @click="closeMenu(true)">✕</button>
