@@ -43,10 +43,12 @@
         @repeat-order="soon('Zopakování objednávky')"
         @navigate="navigate">
         <template #cart><makro-cart-preview @close="closeCart(true)" @open-cart="goCart"></makro-cart-preview></template>
+        <template #lists="{ close }"><makro-lists-pop @close="close(false)"></makro-lists-pop></template>
+        <template #orders="{ close }"><makro-orders-pop @close="close(false)"></makro-orders-pop></template>
       </makro-header>
       <router-view></router-view>
       <makro-footer @link="soon('Odkaz v patičce')"></makro-footer>
-      <makro-variant-switch v-if="$route.path === '/kosik'" :current="$route.query.variant === 'b' ? 'b' : 'a'"></makro-variant-switch>
+      <makro-variant-switch v-if="variantItems($route).length" :items="variantItems($route)"></makro-variant-switch>
       <div v-if="store.toast" class="mk-toast" role="status">{{ store.toast }}</div>
     </div>
 
@@ -57,6 +59,7 @@
     <script src="js/makro-filters.js"></script>
     <script src="components/makro-product-box.js"></script>
     <script src="components/makro-cart-preview.js"></script>
+    <script src="components/makro-nav-pops.js"></script>
     <script src="components/makro-filters-drawer.js"></script>
     <script src="components/makro-category-page.js"></script>
     <script src="components/makro-product-page.js"></script>
@@ -87,11 +90,17 @@
           })
           const focusMain = () => { const m = document.querySelector('main'); if (m) { m.setAttribute('tabindex', '-1'); m.focus() } }
           const navigate = (e) => { if (e.label === M.category.title) location.hash = M.categoryHash; else M.toast('Kategorie „' + e.label + '“ zatím není součástí prototypu.') }
-          return { query, totals, cartOpen, closeCart, goCart, focusMain, navigate, store: M.store, soon: (what) => M.toast(what + ' zatím není součástí prototypu.') }
+          /* layout alternatives that can be compared with the corner switch */
+          const variantItems = (r) => r.path === '/kosik'
+            ? [{ label: 'Makro', href: '#/kosik', on: r.query.variant !== 'b' }, { label: 'Košík', href: '#/kosik?variant=b', on: r.query.variant === 'b' }]
+            : r.path === '/' ? [{ label: 'Bez karet', href: '#/', on: r.query.variant !== 'cards' }, { label: 'S kartami', href: '#/?variant=cards', on: r.query.variant === 'cards' }] : []
+          return { query, totals, cartOpen, closeCart, goCart, focusMain, navigate, variantItems, store: M.store, soon: (what) => M.toast(what + ' zatím není součástí prototypu.') }
         },
       })
       app.component('MakroCartPreview', M.CartPreview)
       app.component('MakroVariantSwitch', M.VariantSwitch)
+      app.component('MakroListsPop', M.ListsPop)
+      app.component('MakroOrdersPop', M.OrdersPop)
       KosikUI.install(app)
       app.component('MakroHeader', ProtoKit.MakroHeader)
       app.component('MakroFooter', ProtoKit.MakroFooter)

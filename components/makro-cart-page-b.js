@@ -195,12 +195,11 @@
 
   /* small switch in the corner to compare the two layouts */
   Makro.VariantSwitch = {
-    props: { current: { type: String, default: 'a' } },
+    props: { items: { type: Array, default: () => [] } },
     template: `
-      <div class="mk-variant" role="group" aria-label="Rozložení košíku">
+      <div class="mk-variant" role="group" aria-label="Varianta rozložení">
         <span>Prototyp:</span>
-        <a href="#/kosik" :aria-current="current === 'a' ? 'true' : undefined">Makro</a>
-        <a href="#/kosik?variant=b" :aria-current="current === 'b' ? 'true' : undefined">Košík</a>
+        <a v-for="i in items" :key="i.label" :href="i.href" :aria-current="i.on ? 'true' : undefined">{{ i.label }}</a>
       </div>`,
   }
 })()

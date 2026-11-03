@@ -8,6 +8,7 @@ Start it with `python3 serve.py 5190` and open `http://localhost:5190/index.html
 | Route | Screen | Reference used |
 |---|---|---|
 | `#/` | Homepage: order status, hero carousel (the Christmas slide has an illustrated scene `assets/hero/xmas-scene.svg`, falling snow and category chips), then "Oblíbené kategorie", last order and lists, product rows | no Figma frame; kit homepage, kosik.cz, live makro homepage |
+| `#/?variant=cards` | Homepage alternative: the cards "Poslední objednávka" and "Moje seznamy" are shown below the category tiles; in the default layout they are hidden because the same content opens from the nav bar items (popovers). The "Prototyp" pill in the corner switches | – |
 | `#/kategorie/parky-spekacky-tocene-salamy` | Category page: subcategory tiles, filter bar (Filtry button with badge, chips, quick pills), "Filtry a řazení" drawer (bottom sheet on phones), count, VAT switch, sorting, product grid | Figma FSD-Store `18:5253`; filters: kosik.cz category page (drawer, chips, pills), live makro filter column (groups) |
 | `#/produkt/:id` | Product detail (35 mock products) | no Figma frame; kosik.cz and live makro product page |
 | `#/kosik` | Cart, makro layout (variant A) | no Figma frame; live makro cart |
@@ -17,7 +18,7 @@ Start it with `python3 serve.py 5190` and open `http://localhost:5190/index.html
 | header cart button | Cart preview (popover, bottom sheet on mobile) | live makro cart panel, kosik.cz preview |
 | Potraviny, Nepotravinové zboží | Category mega-menu: group list on the left, blocks with their children on the right (desktop; basic sheet on mobile) | kosik.cz "Produkty" menu, category tree of sortiment.makro.cz (`js/nav-data.js`, read 2026-11-03) |
 
-Shell: header, navigation bar and footer from the Figma draft (`18:5299`, `18:5319`, `18:5392`).
+Shell: header, navigation bar (Potraviny, Nepotravinové zboží, then Nákupní seznamy and Poslední objednávky with leading icons, in the way of the selfcare prototype) and footer from the Figma draft (`18:5299`, `18:5319`, `18:5392`).
 
 ## How it is built
 
