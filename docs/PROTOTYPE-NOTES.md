@@ -14,6 +14,7 @@ Start it with `python3 serve.py 5190` and open `http://localhost:5190/index.html
 | `#/pokladna` | Checkout (order recap) | data model draft hooks; no live reference |
 | `#/objednavka` | Order confirmation | – |
 | header cart button | Cart preview (popover, bottom sheet on mobile) | live makro cart panel, kosik.cz preview |
+| Potraviny, Nepotravinové zboží | Category mega-menu: group list on the left, blocks with their children on the right (desktop; basic sheet on mobile) | kosik.cz "Produkty" menu, category tree of sortiment.makro.cz (`js/nav-data.js`, read 2026-11-03) |
 
 Shell: header, navigation bar and footer from the Figma draft (`18:5299`, `18:5319`, `18:5392`).
 
@@ -32,11 +33,12 @@ Shell: header, navigation bar and footer from the Figma draft (`18:5299`, `18:53
 - **Sale tag** uses `#e01f56` from this draft (earlier selfcare work used `#990052`); one variable, `--mk-sale`.
 - Product 3 shows an unit price (93,00 Kč/kg) copied from the Figma that does not match its price.
 - Product photos are 206 px wide, soft when enlarged.
+- **Mega-menu**: only the category "Párky, špekáčky, točené salámy" opens a page; every other link shows a toast. Block thumbnails exist only for Ovoce and Masné výrobky, the rest show a letter placeholder because makro.cz category data has no images. Each block lists four children and "+ Další", as on Košík.cz.
 - Contrast: a few colours were darkened from the Figma values to reach 4.5:1 (sale note text, unavailable text, form placeholders).
 
 ## Not built
 
-Search suggestions and results, category mega-menu, Filtry drawer, shopping lists, order history and detail, account area (link out to the selfcare prototype planned), contract prices ("Vaše cena"), role switch (Prohlížející), language switch (CS / EN / VI), online card payment, persistence (everything resets on reload).
+Search suggestions and results, mobile category menu (only a basic sheet), Filtry drawer, shopping lists, order history and detail, account area (link out to the selfcare prototype planned), contract prices ("Vaše cena"), role switch (Prohlížející), language switch (CS / EN / VI), online card payment, persistence (everything resets on reload).
 
 ## Open decisions
 
