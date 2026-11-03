@@ -8,3 +8,5 @@ docs
 README.md
 serve.py
 wrangler.toml
+selfcare/README.md
+selfcare/tools
