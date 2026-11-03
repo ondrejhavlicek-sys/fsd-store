@@ -124,13 +124,21 @@
 .mk-slide-txt { max-width: 600px; }
 .mk-cats { margin-top: -8px; }
 
-@media (max-width: 1100px) {
-  .mk-slide-art { right: -40px; opacity: .85; }
-  .t-xmas::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(0, 18, 48, .88) 35%, rgba(0, 18, 48, 0) 80%); pointer-events: none; }
+/* Above 768px the art is a flex sibling to the right of the text, so it shrinks to the free space instead of covering the text. */
+@media (min-width: 769px) {
+  .t-xmas { padding-bottom: 52px; }
+  .t-xmas .mk-slide-txt { flex: 0 0 auto; max-width: 500px; }
+  .mk-slide-art { position: static; order: 1; flex: 0 1 auto; min-width: 0; max-width: 100%; height: auto; align-self: flex-end; margin: 0 -24px -52px auto; }
+  .on-xmas .mk-dots { justify-content: flex-start; padding-left: 60px; box-sizing: border-box; }
+}
+@media (min-width: 769px) and (max-width: 1100px) {
+  .t-xmas { padding-left: 56px; }
+  .t-xmas .mk-slide-txt { max-width: 420px; }
 }
 @media (max-width: 768px) {
   .mk-hero, .mk-slide { min-height: 300px; }
   .t-xmas { min-height: 440px; align-items: flex-start; }
+  .on-xmas .mk-dots { top: 8px; bottom: auto; justify-content: flex-end; padding-right: 8px; box-sizing: border-box; }
   .mk-slide-art { height: 46%; right: -50px; bottom: 0; opacity: .95; }
   .t-xmas::before { background: linear-gradient(180deg, rgba(0, 18, 48, .8) 55%, rgba(0, 18, 48, 0) 85%); }
 }
