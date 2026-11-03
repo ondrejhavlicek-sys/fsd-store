@@ -21,7 +21,7 @@ Start it with `python3 serve.py 5190` and open `http://localhost:5190/index.html
 | header cart button | Cart preview (popover, bottom sheet on mobile) | live makro cart panel, kosik.cz preview |
 | Potraviny, Nepotravinové zboží | Category mega-menu: group list on the left, blocks with their children on the right (desktop; basic sheet on mobile) | kosik.cz "Produkty" menu, category tree of sortiment.makro.cz (`js/nav-data.js`, read 2026-11-03) |
 
-Shell: header, navigation bar (Potraviny, Nepotravinové zboží, then Nákupní seznamy and Poslední objednávky with leading icons, in the way of the selfcare prototype) and footer from the Figma draft (`18:5299`, `18:5319`, `18:5392`).
+Shell: header, navigation bar (Potraviny, Nepotravinové zboží, then Nákupní seznamy and Poslední objednávky with leading two-tone icons (list, history); both open a popover on hover after 250 ms and on click, like the category menu, in the way of the selfcare prototype) and footer from the Figma draft (`18:5299`, `18:5319`, `18:5392`).
 
 ## How it is built
 
