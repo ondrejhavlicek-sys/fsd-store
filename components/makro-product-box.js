@@ -25,7 +25,7 @@
       const head = Vue.computed(() => (isGross.value ? props.product.gross : props.product.net))
       const headOld = Vue.computed(() => (isGross.value ? props.product.oldGross : props.product.old))
       const second = Vue.computed(() =>
-        isGross.value ? 'bez' + nbsp + 'DPH ' + Makro.num(props.product.net) : 'vč.' + nbsp + 'DPH ' + Makro.num(props.product.gross),
+        isGross.value ? Makro.num(props.product.net) + nbsp + 'bez' + nbsp + 'DPH' : Makro.num(props.product.gross) + nbsp + 'vč.' + nbsp + 'DPH',
       )
       const line = Vue.computed(() => Makro.kc(head.value * props.qty))
       return { parts, head, headOld, second, line, num: Makro.num, src: (n) => base() + 'assets/' + n }
