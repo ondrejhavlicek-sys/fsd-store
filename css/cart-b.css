@@ -120,7 +120,7 @@
 .mk-cb-rail { margin-top: 40px; }
 
 /* ---- variant switch ---- */
-.mk-variant { position: fixed; left: 16px; bottom: 16px; z-index: 55; display: flex; align-items: center; gap: 4px; padding: 6px 8px 6px 14px; border-radius: 99px; background: #222; color: #fff; font-size: 12px; line-height: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(0, 0, 0, .3); }
+.mk-variant { position: fixed; left: 16px; bottom: 16px; z-index: 45; /* below Fresh drawers and dialogs (50) */ display: flex; align-items: center; gap: 4px; padding: 6px 8px 6px 14px; border-radius: 99px; background: #222; color: #fff; font-size: 12px; line-height: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(0, 0, 0, .3); }
 .mk-variant a { padding: 4px 10px; border-radius: 99px; color: #fff; text-decoration: none; }
 .mk-variant a:hover { background: rgba(255, 255, 255, .16); }
 .mk-variant a[aria-current="true"] { background: #fff; color: #222; }

@@ -1,0 +1,12 @@
+/* copied from fsd-selfcare @ f2a58c7 (css/base.css), do not edit upstream here; re-run selfcare/tools/sync.py to update; generated: every selector is scoped with :where(.sc); unused shell rules dropped */
+:where(.sc) h1, :where(.sc) h2, :where(.sc) h3 { color: var(--heading); margin: 0; font-weight: var(--strong); }
+:where(.sc) h1 { font-size: var(--fs-title); line-height: var(--lh-title); }
+:where(.sc) h2 { font-size: var(--fs-h2); line-height: var(--lh-h2); color: var(--ink-strong); }
+html[data-type="makro"] :where(.sc) h2 { color: var(--heading); }
+:where(.sc) p { margin: 0; }
+:where(.sc) a { color: var(--blue-link); }
+:where(.sc) button { font: inherit; cursor: pointer; }
+:where(.sc) [hidden] { display: none !important; }
+:where(.sc) :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+:where(.sc) .head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 0 0 24px; flex-wrap: wrap; }
+:where(.sc) .head h1 { margin: 0 0 8px; }

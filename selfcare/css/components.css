@@ -1,0 +1,111 @@
+/* copied from fsd-selfcare @ f2a58c7 (css/components.css), do not edit upstream here; re-run selfcare/tools/sync.py to update; generated: every selector is scoped with :where(.sc); unused shell rules dropped */
+/* buttons (registration: 13px/600, padding 12px; secondary actions are text links) */
+:where(.sc) .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; border: 0; background: var(--blue); color: #fff; font-size: var(--fs-btn); font-weight: var(--strong); text-decoration: none; line-height: 1.4; }
+html[data-type="makro"] :where(.sc) .btn { line-height: 27px; padding: 11px 16px; }
+:where(.sc) .btn:hover { background: var(--blue-hover); }
+:where(.sc) .btn:active { background: var(--blue-press); }
+:where(.sc) .btn.soft { background: var(--soft); color: var(--blue-link); }
+:where(.sc) .btn.soft:hover { background: var(--soft-hover); }
+:where(.sc) .btn.danger { background: var(--err); }
+:where(.sc) .btn.danger:hover { background: #e0404f; }
+:where(.sc) .btn.sm { padding: 7px 10px; font-size: 12px; }
+html[data-type="makro"] :where(.sc) .btn.sm { font-size: 15px; line-height: 22px; padding: 7px 12px; }
+:where(.sc) .btn[disabled] { background: var(--disabled-bg); color: var(--disabled-text); pointer-events: none; }
+:where(.sc) .btn svg { width: 16px; height: 16px; }
+:where(.sc) .link, :where(.sc) .tbtn { background: none; border: 0; color: var(--blue); font-weight: var(--strong); font-size: var(--fs-btn); padding: 0; }
+html[data-type="makro"] :where(.sc) .link, html[data-type="makro"] :where(.sc) .tbtn { font-size: 16px; }
+:where(.sc) .link:hover, :where(.sc) .tbtn:hover { text-decoration: underline; text-underline-offset: 3px; }
+:where(.sc) .tbtn { padding: 4px 0; }
+:where(.sc) .tbtn.danger, :where(.sc) .link.danger { color: var(--err); }
+:where(.sc) .icon-btn { width: 32px; height: 32px; border-radius: 50%; border: 0; background: transparent; color: var(--navy); display: grid; place-items: center; }
+:where(.sc) .icon-btn:hover { background: var(--soft); }
+:where(.sc) .icon-btn svg { width: 18px; height: 18px; }
+/* panels (registration .panel: grey, padding 20) */
+:where(.sc) .muted { color: var(--muted); }
+/* alerts (registration: tinted box, thin ring, 4px accent bar; info = hint box with white circle icon) */
+:where(.sc) .alert { --c: var(--blue); --bg: var(--info); display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px 14px 14px; margin-bottom: 20px; background: var(--bg); border-left: 4px solid var(--c); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 22%, transparent); font-size: 14px; line-height: 1.45; color: var(--ink-strong); animation: sc-fade .3s; }
+html[data-type="makro"] :where(.sc) .alert { font-size: 16px; line-height: 24px; }
+:where(.sc) .alert svg { flex: 0 0 auto; width: 20px; height: 20px; margin-top: 1px; color: var(--c); }
+:where(.sc) .alert b { display: block; }
+:where(.sc) .alert.ok { --c: var(--ok); --bg: #eef7f2; }
+:where(.sc) .alert.err { --c: var(--err); --bg: #fdf0f1; }
+:where(.sc) .alert.warn { --c: var(--warn); --bg: #fff6ea; }
+:where(.sc) .alert.info { --tag: 26px; border-left: 0; box-shadow: none; padding: 12px; font-size: 13px; line-height: 1.5; gap: 8px; }
+html[data-type="makro"] :where(.sc) .alert.info { font-size: 16px; line-height: 24px; --tag: 30px; }
+:where(.sc) .alert.info svg { width: var(--tag); height: var(--tag); margin: 0; padding: 5px; border-radius: 50%; background: #fff; color: var(--navy); }
+:where(.sc) .alert.info > div { padding-top: calc((var(--tag) - 1lh) / 2); }
+:where(.sc) .alert .tbtn { margin-top: 4px; }
+/* loading / empty */
+:where(.sc) .loading { background: var(--panel); padding: 48px; display: flex; justify-content: center; gap: 10px; }
+:where(.sc) .loading i { width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px #ececec; animation: sc-pulse 1.2s infinite ease-in-out; }
+:where(.sc) .loading i:nth-child(2) { animation-delay: .2s; }
+:where(.sc) .loading i:nth-child(3) { animation-delay: .4s; }
+@keyframes sc-pulse { 0%, 80%, 100% { opacity: .35; } 40% { opacity: 1; } }
+:where(.sc) .empty { background: var(--panel); padding: 40px 24px; text-align: center; display: grid; gap: 8px; justify-items: center; }
+:where(.sc) .empty h2 { font-size: 18px; line-height: 24px; }
+:where(.sc) .empty p { max-width: 420px; color: var(--ink); margin-bottom: 8px; }
+/* table */
+/* forms (registration: bold 13px labels, 44px fields, dark custom checkbox/radio, white tiles) */
+:where(.sc) .fld { display: grid; gap: 0; margin-bottom: 16px; }
+:where(.sc) .fld > label, :where(.sc) .lbl-t { font-weight: var(--strong); font-size: var(--fs-lbl); color: var(--ink-strong); margin: 0 0 6px; display: block; }
+:where(.sc) .fld > label .muted { font-weight: 400; }
+:where(.sc) .fld input[type=text], :where(.sc) .fld input[type=email], :where(.sc) .fld input[type=tel], :where(.sc) .fld input[type=time], :where(.sc) .fld select, :where(.sc) .fld textarea { width: 100%; height: var(--field-h); border: 1px solid var(--line); padding: 0 12px; font: inherit; background: #fff; color: var(--ink-strong); border-radius: 0; }
+:where(.sc) .fld textarea { padding: 10px 12px; height: auto; min-height: 72px; }
+:where(.sc) .fld input:focus, :where(.sc) .fld select:focus, :where(.sc) .fld textarea:focus { outline: 2px solid var(--blue); outline-offset: 0; }
+:where(.sc) .fld.bad input, :where(.sc) .fld.bad select { border-color: var(--err); }
+:where(.sc) .fld .err { color: var(--err); font-size: var(--fs-small); margin-top: 4px; }
+:where(.sc) .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+:where(.sc) input[type=checkbox], :where(.sc) input[type=radio] { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; border: 1.5px solid #b9b9bd; margin: 1px 0 0; flex: 0 0 auto; display: grid; place-items: center; background: #fff; cursor: pointer; }
+:where(.sc) input[type=checkbox] { border-radius: 3px; }
+:where(.sc) input[type=radio] { border-radius: 50%; width: 18px; height: 18px; }
+:where(.sc) input[type=checkbox]:checked, :where(.sc) input[type=radio]:checked { background: var(--ink); border-color: var(--ink); }
+:where(.sc) input[type=checkbox]:checked::after, :where(.sc) input[type=radio]:checked::after { content: "✓"; color: #fff; font-size: 11px; line-height: 1; }
+:where(.sc) input[type=checkbox]:focus-visible, :where(.sc) input[type=radio]:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+:where(.sc) .tile { display: flex; gap: 12px; align-items: flex-start; border: 2px solid transparent; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.06), 0 0 4px rgba(0,0,0,.06); }
+:where(.sc) .tile:has(input:checked) { border-color: #005ae0; }
+:where(.sc) .tile b { display: block; color: var(--ink-strong); font-size: var(--fs-lbl); }
+:where(.sc) .tile span { color: var(--ink); font-size: var(--fs-small); }
+:where(.sc) .tiles { background: var(--panel); padding: 16px; margin-bottom: 16px; }
+:where(.sc) .tiles .tile:last-child { margin-bottom: 0; }
+:where(.sc) .check { display: flex; gap: 8px; align-items: flex-start; padding: 6px 0; cursor: pointer; font-size: var(--fs-lbl); }
+:where(.sc) .days { display: flex; gap: 6px; flex-wrap: wrap; }
+:where(.sc) .days label { cursor: pointer; }
+:where(.sc) .days input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+:where(.sc) .days span { display: grid; place-items: center; width: 44px; height: 36px; border: 1px solid var(--line); background: #fff; font-size: var(--fs-lbl); }
+:where(.sc) .days input:checked + span { background: var(--soft); border-color: var(--blue); color: var(--blue-link); font-weight: var(--strong); }
+:where(.sc) .days input:focus-visible + span { outline: 2px solid var(--blue); }
+:where(.sc) .sug { border: 1px solid var(--line); background: #fff; margin-top: -1px; }
+:where(.sc) .sug button { display: block; width: 100%; text-align: left; border: 0; background: #fff; padding: 10px 12px; }
+:where(.sc) .sug button:hover { background: var(--info); }
+:where(.sc) .map { position: relative; height: 160px; background: #e9eef3 repeating-linear-gradient(0deg, transparent 0 31px, #d6dde5 31px 32px), repeating-linear-gradient(90deg, transparent 0 31px, #d6dde5 31px 32px); border: 1px solid var(--line); touch-action: none; overflow: hidden; }
+:where(.sc) .map .pin { position: absolute; width: 28px; height: 28px; transform: translate(-50%, -100%); color: var(--err); cursor: grab; }
+:where(.sc) .map small { position: absolute; left: 8px; bottom: 6px; color: var(--muted); background: rgba(255,255,255,.85); padding: 0 4px; }
+/* dialog / bottom sheet (registration: 32px padding, 22px title, square grey close, dark overlay) */
+:where(.sc) .ov { position: fixed; inset: 0; background: var(--overlay); z-index: 100; display: grid; place-items: center; padding: 16px; animation: sc-fade .3s; }
+@keyframes sc-fade { from { opacity: 0; } }
+:where(.sc) .dlg { background: #fff; width: 100%; max-width: 480px; max-height: calc(100vh - 32px); overflow: auto; padding: 32px; position: relative; box-shadow: 0 12px 40px rgba(0,0,0,.3); }
+:where(.sc) .dlg.wide { max-width: 600px; }
+:where(.sc) .dlg-h { margin-bottom: 16px; padding-right: 32px; }
+:where(.sc) .dlg-h h2 { margin: 0 0 12px; font-size: 22px; line-height: 28px; color: var(--heading); }
+html[data-type="makro"] :where(.sc) .dlg-h h2 { font-size: 24px; line-height: 32px; }
+:where(.sc) .dlg-h p { font-size: var(--fs-base); line-height: 22px; }
+:where(.sc) .dlg .x { position: absolute; right: 12px; top: 12px; width: 32px; height: 32px; border: 0; background: #efeff0; display: grid; place-items: center; color: var(--ink-strong); }
+:where(.sc) .dlg .x svg { width: 14px; height: 14px; }
+:where(.sc) .dlg-f { display: flex; align-items: center; gap: 24px; margin-top: 28px; flex-wrap: wrap; }
+:where(.sc) .grab { display: none; }
+@media (max-width: 768px) {
+:where(.sc) .ov { place-items: end stretch; padding: 0; }
+:where(.sc) .dlg, :where(.sc) .dlg.wide { max-width: none; max-height: 90vh; padding: 12px 16px 20px; animation: sc-up .2s; }
+:where(.sc) .grab { display: block; width: 40px; height: 4px; background: #c4c9d0; margin: 0 auto 12px; border-radius: 2px; }
+:where(.sc) .dlg-f { flex-direction: column-reverse; align-items: stretch; gap: 16px; text-align: center; }
+:where(.sc) .dlg-f .btn { width: 100%; min-height: 48px; font-size: 16px; }
+:where(.sc) .row2 { grid-template-columns: 1fr; }
+:where(.sc) .head .btn { width: 100%; min-height: 48px; font-size: 16px; }
+}
+@keyframes sc-up { from { transform: translateY(40px); opacity: 0; } }
+/* menu hub (mobile) */
+:where(.sc) .hub-a { display: flex; align-items: center; gap: 12px; padding: 14px 4px; border-bottom: 1px solid var(--line); color: var(--ink-strong); font-weight: var(--strong); text-decoration: none; }
+:where(.sc) .hub-a svg, :where(.sc) .hub-a > img { width: 22px; height: 22px; color: var(--navy); flex: none; }
+:where(.sc) .hub-a::after { content: "›"; margin-left: auto; font-size: 22px; color: var(--muted); }
+:where(.sc) .hub-g { font-size: var(--fs-small); color: var(--muted); margin: 20px 0 2px; }
+/* toast */

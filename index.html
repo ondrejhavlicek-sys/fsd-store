@@ -17,6 +17,11 @@
     <link rel="stylesheet" href="css/cart.css" />
     <link rel="stylesheet" href="css/checkout.css" />
     <link rel="stylesheet" href="css/cart-b.css" />
+    <link rel="stylesheet" href="selfcare/css/base.css" />
+    <link rel="stylesheet" href="selfcare/css/components.css" />
+    <link rel="stylesheet" href="selfcare/css/account.css" />
+    <link rel="stylesheet" href="selfcare/css/shop.css" />
+    <link rel="stylesheet" href="css/mk-account.css" />
     <script src="vendor/vue.global.js"></script>
     <script src="vendor/kosik-ui.js"></script>
     <script src="vendor/tailwind-play.js"></script>
@@ -34,9 +39,9 @@
         :cart-open="cartOpen"
         :simple="$route.path === '/kosik' && $route.query.variant === 'b'"
         @search="soon('Vyhledávání')"
-        @address="soon('Výběr dodací adresy')"
+        @address="openAddress"
         @notifications="soon('Oznámení')"
-        @user-menu="soon('Menu účtu')"
+        @account-open="closeCart(false)"
         @cart-toggle="cartOpen = !cartOpen"
         @checkout="goCart"
         @shopping-lists="soon('Nákupní seznamy')"
@@ -67,6 +72,28 @@
     <script src="components/makro-cart-page.js"></script>
     <script src="components/makro-cart-page-b.js"></script>
     <script src="components/makro-checkout-page.js"></script>
+    <!-- account area copied from the fsd-selfcare prototype (see selfcare/bridge.js); order matters -->
+    <script src="selfcare/i18n-stub.js"></script>
+    <script src="selfcare/js/data.js"></script>
+    <script src="selfcare/js/shop-data.js"></script>
+    <script src="selfcare/js/ui.js"></script>
+    <script src="selfcare/bridge.js"></script>
+    <script src="selfcare/js/account.js"></script>
+    <script src="selfcare/js/acctmenu.js"></script>
+    <script src="selfcare/js/addrdrawer.js"></script>
+    <script src="selfcare/js/pages/company.js"></script>
+    <script src="selfcare/js/pages/orders.js"></script>
+    <script src="selfcare/js/pages/authorized.js"></script>
+    <script src="selfcare/js/pages/roles.js"></script>
+    <script src="selfcare/js/pages/payments.js"></script>
+    <script src="selfcare/js/pages/contracts.js"></script>
+    <script src="selfcare/js/pages/personal.js"></script>
+    <script src="selfcare/js/pages/security.js"></script>
+    <script src="selfcare/js/pages/privacy.js"></script>
+    <script src="selfcare/js/pages/terms.js"></script>
+    <script src="selfcare/js/pages/users.js"></script>
+    <script src="selfcare/js/pages/addresses.js"></script>
+    <script src="components/makro-account-page.js"></script>
     <script>
       const { createRouter, createWebHashHistory } = KosikUI.vueRouter
       const M = window.Makro
@@ -83,18 +110,20 @@
             if (refocus) Vue.nextTick(() => document.querySelector('.mk-cart-btn')?.focus())
           }
           const goCart = () => { closeCart(false); location.hash = '#/kosik' }
+          /* delivery address drawer (Fresh Drawer from the selfcare account area) */
+          const openAddress = () => { closeCart(false); window.AddrDrawer && window.AddrDrawer.open() }
           Vue.onMounted(() => {
             document.addEventListener('pointerdown', (e) => { if (cartOpen.value && !e.target.closest('.mk-cart')) closeCart(false) })
             window.addEventListener('hashchange', () => closeCart(false))
             document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCart(true) })
           })
-          const focusMain = () => { const m = document.querySelector('main'); if (m) { m.setAttribute('tabindex', '-1'); m.focus() } }
+          const focusMain = () => { const m = document.querySelector('main') || document.querySelector('.mk-account'); if (m) { m.setAttribute('tabindex', '-1'); m.focus() } }
           const navigate = (e) => { if (e.label === M.category.title) location.hash = M.categoryHash; else M.toast('Kategorie „' + e.label + '“ zatím není součástí prototypu.') }
           /* layout alternatives that can be compared with the corner switch */
           const variantItems = (r) => r.path === '/kosik'
             ? [{ label: 'Makro', href: '#/kosik', on: r.query.variant !== 'b' }, { label: 'Košík', href: '#/kosik?variant=b', on: r.query.variant === 'b' }]
             : r.path === '/' ? [{ label: 'Bez karet', href: '#/', on: r.query.variant !== 'cards' }, { label: 'S kartami', href: '#/?variant=cards', on: r.query.variant === 'cards' }] : []
-          return { query, totals, cartOpen, closeCart, goCart, focusMain, navigate, variantItems, store: M.store, soon: (what) => M.toast(what + ' zatím není součástí prototypu.') }
+          return { query, totals, cartOpen, closeCart, goCart, openAddress, focusMain, navigate, variantItems, store: M.store, soon: (what) => M.toast(what + ' zatím není součástí prototypu.') }
         },
       })
       app.component('MakroCartPreview', M.CartPreview)
@@ -113,6 +142,12 @@
             { path: '/pokladna', component: M.CheckoutPage },
             { path: '/objednavka', component: M.OrderDonePage },
             { path: '/kategorie/:slug', component: M.CategoryPage },
+            /* account area (selfcare island); renamed or merged pages keep working, as in selfcare */
+            { path: '/ucet/newsletter', redirect: '/ucet/privacy' },
+            { path: '/ucet/sites', redirect: '/ucet/addresses' },
+            { path: '/ucet/:id?', component: M.AccountPage, props: true },
+            /* "Nákupní seznamy" in the account menu points here (selfcare shop page, not part of the store prototype) */
+            { path: '/seznamy', component: M.HomePage, beforeEnter: (to, from) => { M.toast('Nákupní seznamy zatím nejsou součástí prototypu.'); return from.matched.length ? false : '/' } },
             { path: '/:pathMatch(.*)*', component: M.HomePage },
           ],
       })
@@ -123,11 +158,13 @@
         if (to.path === '/pokladna') return 'Rekapitulace objednávky'
         if (to.path === '/objednavka') return 'Objednávka'
         if (to.path.startsWith('/kategorie/')) return M.category.title
+        if (to.path.startsWith('/ucet')) return M.accountTitle(to.params.id)
         return 'Úvodní stránka'
       }
-      router.afterEach((to, from) => {
+      router.afterEach((to, from, failure) => {
+        if (failure) return // cancelled navigation (e.g. /seznamy): the page stays as it was
         document.title = titles(to) + ' | makro'
-        if (from.matched.length) Vue.nextTick(() => { const m = document.querySelector('main'); if (m) { m.setAttribute('tabindex', '-1'); m.focus({ preventScroll: true }) } })
+        if (from.matched.length) Vue.nextTick(() => { const m = document.querySelector('main') || document.querySelector('.mk-account'); if (m) { m.setAttribute('tabindex', '-1'); m.focus({ preventScroll: true }) } })
       })
       app.use(router)
       // Tailwind Play generates the DS classes asynchronously; mount once the first ones exist

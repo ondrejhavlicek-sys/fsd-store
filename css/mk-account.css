@@ -1,0 +1,58 @@
+/* Account area (islands copied from the fsd-selfcare prototype, see selfcare/bridge.js and docs/PROTOTYPE-NOTES.md).
+   Own file: header company button, account page frame, "Scénáře prototypu" panel, and the few Fresh fixes the copy needs.
+   The copied rules (selfcare/css/*.css) are scoped with :where(.sc); `.sc` marks the island hosts and the Fresh roots teleported to <body>. */
+
+/* ---- scope root: what selfcare's <body> gives its content (font, size, text colour; line height is 1.5 there because Tailwind's
+   preflight (`body { line-height: inherit }`) loads after base.css and overrides its 1.4) ---- */
+.sc { font-family: var(--font); font-size: var(--fs-base); line-height: 1.5; color: var(--ink); }
+
+/* two-tone Fresh icons ship a purple secondary tone; selfcare uses the light makro blue (only needed inside the island) */
+:where(.sc) .nav-ico { --ds-icon-fill-1: #9dbdf0; }
+/* Fresh table: grey row cards stay, corners square (selfcare css/makro-fresh.css; the store's own makro-fresh.css has no table rule) */
+:where(.sc) .ds-table tbody td:first-child, :where(.sc) .ds-table tbody td:last-child { border-radius: 0; }
+/* neutral product tag (the "Později" tag): makro soft blue (selfcare css/makro-fresh.css) */
+html body :where(.sc) [data-cid="ds-product-tag"].tw-bg-ds-secondary { background-color: var(--soft); color: var(--navy); }
+
+/* Fresh floating content (account menu, selects) is positioned by a wrapper with z-index:auto, which would sit below the
+   store's navigation bar (z-index 30); lift it above the header like Fresh's own overlay layer (50) */
+body > .sc[style*="position: fixed"] { z-index: 50 !important; }
+
+/* ---- header: company profile button (selfcare .co-btn: pill with building icon, name and chevron; round icon button on phones) ---- */
+.mk-co { display: flex; align-items: center; min-width: 0; font-size: 14px; line-height: 18px; }
+.mk-co .co-btn { display: flex; align-items: center; gap: 8px; height: 40px; max-width: 280px; padding: 0 12px; border: 0; border-radius: 99px; background: var(--mk-tint); color: var(--mk-navy); font-weight: 600; font-size: 14px; cursor: pointer; }
+.mk-co .co-btn:hover, .mk-co .co-btn[aria-expanded="true"] { background: var(--mk-tint-hover); }
+.mk-co .co-btn .ico-building { width: 20px; height: 20px; flex: none; }
+.mk-co .co-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mk-co .co-btn img.chev { width: 20px; height: 20px; flex: none; }
+/* below 1100 px the pill would not fit next to the search field: icon only (the menu still opens as a dropdown above 768 px) */
+@media (max-width: 1100px) {
+  .mk-co .co-btn span, .mk-co .co-btn img.chev { display: none; }
+  .mk-co .co-btn { width: 40px; padding: 0; justify-content: center; }
+}
+@media (max-width: 768px) { .mk-co .co-btn { width: 36px; height: 36px; } }
+
+/* ---- header: delivery address label (optional "Název provozovny" + street, zip city) ---- */
+.mk-addr-name { font-weight: 600; }
+.mk-addr-name::after { content: " · "; font-weight: 400; }
+.mk-addr-name + .mk-addr-line { font-weight: 400; }
+/* the label grows with the room left between the logo and the centred search field (up to 340 px as in selfcare; the Figma width was 181 px) */
+.mk-addr-txt { width: auto; max-width: min(340px, calc(50vw - 451px - var(--mk-pad))); }
+/* the search field may shrink (it could not below ~260 px, which pushed the header buttons out of the viewport around 800 px) */
+.mk-search { min-width: 0; }
+@media (max-width: 1280px) { .mk-addr-txt { max-width: 160px; } }
+
+/* ---- page frame: selfcare's 1128 px column (280 px menu + 40 px gap + 800 px content), centred ---- */
+.mk-account { font-family: var(--font); font-size: var(--fs-base); line-height: 1.5; color: var(--ink); }
+.mk-account-in { max-width: 1128px; margin: 16px auto 48px; padding-inline: 16px; }
+@media (max-width: 768px) { .mk-account-in { margin: 0 auto 72px; padding-inline: 0; } }
+
+/* ---- "Scénáře prototypu" panel (bottom right; the "Prototyp" variant pill sits bottom left) ---- */
+.mk-scn { position: fixed; right: 12px; bottom: 12px; z-index: 40; width: 230px; background: #fff; border: 1px solid var(--line); box-shadow: 0 2px 12px rgba(0, 0, 0, .12); font-size: 12px; line-height: 16px; color: var(--muted); }
+.mk-scn-t { width: 100%; padding: 8px 10px; border: 0; background: none; color: var(--muted); font: inherit; font-weight: 600; text-align: left; cursor: pointer; }
+.mk-scn-body { display: flex; flex-direction: column; gap: 8px; padding: 4px 10px 10px; }
+.mk-scn label { display: flex; flex-direction: column; gap: 3px; }
+.mk-scn select { font: inherit; padding: 4px; color: #222; }
+.mk-scn-reset { padding: 7px 10px; border: 0; background: var(--soft); color: var(--blue-link); font: inherit; font-weight: 600; cursor: pointer; }
+.mk-scn-reset:hover { background: var(--soft-hover); }
+.mk-scn :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+@media (max-width: 768px) { .mk-scn { right: 8px; bottom: 8px; } }

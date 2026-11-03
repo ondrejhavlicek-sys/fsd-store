@@ -1,0 +1,145 @@
+/* copied from fsd-selfcare @ f2a58c7 (css/account.css), do not edit upstream here; re-run selfcare/tools/sync.py to update; generated: every selector is scoped with :where(.sc); unused shell rules dropped */
+/* Company account area (Fresh island, js/account.js). Makro: radius 0, makro blue, Typography follows the theme. */
+:where(.sc) .acct-crumbs { margin: 0 0 24px; font-size: var(--fs-base); }
+:where(.sc) .acct .shell { display: grid; grid-template-columns: 280px minmax(0, 800px); gap: 40px; align-items: start; }
+:where(.sc) .acct .content { max-width: 800px; min-width: 0; }
+/* sidebar: company block + grouped navigation (kosik.cz profile structure) */
+:where(.sc) .acct .side { display: grid; gap: 20px; align-self: start; }
+:where(.sc) .acct .who-box { display: grid; gap: 12px; }
+:where(.sc) .acct .who { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+:where(.sc) .acct .who b { display: block; color: var(--ink-strong); font-weight: var(--strong); overflow-wrap: anywhere; }
+:where(.sc) .acct .who span { font-size: var(--fs-small); color: var(--muted); }
+:where(.sc) .acct .who-btn { width: 100%; }
+:where(.sc) .acct .nav-group { display: grid; gap: 2px; }
+:where(.sc) .acct .nav-group h3 { font-size: var(--fs-small); font-weight: 400; color: var(--muted); padding: 0 8px 4px; margin: 0; }
+:where(.sc) .acct .nav-a { display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 8px; color: var(--ink-strong); text-decoration: none; font-size: var(--fs-base); font-weight: var(--strong); transition: background-color .15s; }
+:where(.sc) .acct .nav-a:hover { background: #e9eef6; }
+:where(.sc) .acct .nav-a[aria-current="page"] { background: var(--soft); color: var(--navy); }
+:where(.sc) .acct .nav-ico { width: 24px; height: 24px; flex: none; color: var(--navy); }
+:where(.sc) .acct .nav-lbl { flex: 1; min-width: 0; }
+:where(.sc) .acct .nav-cnt { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 99px; background: var(--soft); color: var(--navy); font-size: var(--fs-small); font-weight: 600; display: grid; place-items: center; }
+:where(.sc) .acct .nav-a[aria-current="page"] .nav-cnt { background: #fff; }
+:where(.sc) .acct .nav-lock { width: 16px; height: 16px; color: var(--muted); }
+/* page head, cards, rows */
+:where(.sc) .acct .head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 0 0 24px; flex-wrap: wrap; }
+:where(.sc) .acct .head h1 { margin: 0; }
+:where(.sc) .acct .mb { margin-bottom: 20px; }
+:where(.sc) .acct-card { background: var(--panel); padding: 20px; margin-bottom: 16px; display: flex; gap: 20px; align-items: flex-start; justify-content: space-between; }
+:where(.sc) .acct-card h2 { margin-bottom: 6px; }
+:where(.sc) .acct-card .rows { display: grid; gap: 2px; font-size: var(--fs-lbl); min-width: 0; overflow-wrap: anywhere; }
+:where(.sc) .acct-card .rows b { color: var(--ink-strong); }
+:where(.sc) .acct-card .card-act { display: flex; align-items: center; gap: 8px; flex: none; }
+:where(.sc) .acct-card .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+:where(.sc) .acct-card .acts { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+:where(.sc) .acct-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+:where(.sc) .acct-grid .acct-card { margin: 0; flex-direction: column; }
+:where(.sc) .acct-card .top { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; width: 100%; }
+:where(.sc) .muted { color: var(--muted); }
+/* forms */
+:where(.sc) .fld2 { display: grid; gap: 6px; margin-bottom: 16px; }
+:where(.sc) .fld2 .opt { font-weight: 400; color: var(--muted); }
+:where(.sc) .fld-err { color: var(--err); font-size: var(--fs-small); }
+:where(.sc) .fld-hint { color: var(--muted); font-size: var(--fs-small); }
+:where(.sc) .acct .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+:where(.sc) .acct-danger { --ds-context-primary: var(--err) !important; --ds-context-off-mid: #e0404f !important; --ds-button-primary-background: var(--err) !important; --ds-button-primary-hover-background: #e0404f !important; }
+:where(.sc) .acct-radio { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; }
+:where(.sc) .acct-radio b { display: block; color: var(--ink-strong); font-size: var(--fs-lbl); }
+:where(.sc) .acct-radio span { color: var(--ink); font-size: var(--fs-small); }
+@media (max-width: 768px) {
+:where(.sc) .acct .shell { display: block; }
+:where(.sc) .acct .row2 { grid-template-columns: 1fr; }
+:where(.sc) .acct-grid { grid-template-columns: 1fr; }
+:where(.sc) .acct-card { flex-wrap: wrap; }
+:where(.sc) .acct .back { display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; margin-bottom: 20px; font-size: var(--fs-lbl); }
+:where(.sc) .acct .back i { width: 32px; height: 32px; border-radius: 50%; background: var(--info); color: var(--navy); display: grid; place-items: center; font-style: normal; font-size: 16px; }
+}
+@media (min-width: 769px) {
+:where(.sc) .acct .back { display: none; }
+}
+/* table (Fresh Table) + helpers */
+:where(.sc) .acct-tbl { width: 100%; font-size: var(--fs-lbl); }
+:where(.sc) .acct-tbl th { text-align: left; font-size: var(--fs-small); color: var(--muted); font-weight: 400; padding: 8px 10px; }
+:where(.sc) .acct-tbl td { padding: 12px 10px; vertical-align: top; }
+:where(.sc) .acct-tbl .acts { display: flex; flex-wrap: wrap; gap: 0 4px; }
+:where(.sc) .acct-tbl .email { overflow-wrap: anywhere; font-weight: var(--strong); color: var(--ink-strong); }
+:where(.sc) .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+:where(.sc) .lead { margin: -8px 0 20px; }
+:where(.sc) .sec-h { margin: 24px 0 8px; }
+:where(.sc) .big { font-size: 24px; color: var(--ink-strong); }
+:where(.sc) .pos { color: var(--ok); }
+:where(.sc) .neg { color: var(--err); }
+:where(.sc) .sw-lbl { font-size: var(--fs-small); color: var(--muted); }
+:where(.sc) .fset { border: 0; padding: 0; margin: 0 0 16px; }
+:where(.sc) .fset legend { padding: 0; margin-bottom: 6px; }
+:where(.sc) .acct-radio .rdesc { display: block; }
+:where(.sc) .acct-danger-text { --ds-button-ghost-text: var(--err); color: var(--err); }
+:where(.sc) .days { display: flex; gap: 6px; flex-wrap: wrap; }
+:where(.sc) .days button { width: 44px; height: 36px; border: 1px solid var(--line); background: #fff; font: inherit; font-size: var(--fs-lbl); color: var(--ink); }
+:where(.sc) .days button.on { background: var(--soft); border-color: var(--blue); color: var(--blue-link); font-weight: var(--strong); }
+:where(.sc) .addr { position: relative; }
+:where(.sc) .empty { background: var(--panel); padding: 40px 24px; text-align: center; display: grid; gap: 8px; justify-items: center; }
+@media (max-width: 768px) {
+/* table -> stacked cards */
+:where(.sc) .acct-tbl thead { display: none; }
+:where(.sc) .acct-tbl, :where(.sc) .acct-tbl tbody, :where(.sc) .acct-tbl tr, :where(.sc) .acct-tbl td { display: block; width: 100%; }
+:where(.sc) .acct-tbl tr { background: var(--panel); padding: 12px 16px; margin-bottom: 12px; }
+:where(.sc) .acct-tbl td { border: 0; padding: 3px 0; }
+:where(.sc) .acct-tbl td[data-label]::before { content: attr(data-label); display: block; font-size: var(--fs-small); color: var(--muted); }
+:where(.sc) .acct-tbl td.acts-td { margin-top: 8px; }
+}
+/* Tailwind preflight (shipped with Fresh) resets heading sizes globally, so set them explicitly */
+:where(.sc) .acct h1 { font-size: var(--fs-title); line-height: var(--lh-title); font-weight: var(--strong); color: var(--heading); }
+:where(.sc) .acct h2 { font-size: var(--fs-h2); line-height: var(--lh-h2); font-weight: var(--strong); color: var(--ink-strong); }
+html[data-type="makro"] :where(.sc) .acct h2 { color: var(--heading); }
+:where(.sc) .acct .empty h2 { font-size: 18px; line-height: 24px; }
+:where(.sc) .radios { display: grid; gap: 0; }
+:where(.sc) .acct-crumbs, :where(.sc) .acct-crumbs * { font-size: var(--fs-base); }
+:where(.sc) .acct-crumbs a { color: #0064fe; text-decoration: none; }
+:where(.sc) .acct-crumbs a:hover { text-decoration: underline; }
+/* two-tone Fresh icons ship a purple secondary tone; use the light makro blue */
+:where(.sc) .nav-ico { --ds-icon-fill-1: #9dbdf0; }
+:where(.sc) .acct-radio :is([role="radio"], [role="checkbox"], button) { flex: none; }
+/* key/value rows, staff-controlled (read-only) blocks, MVP / "to verify" tags */
+:where(.sc) .kv { display: grid; grid-template-columns: minmax(120px, 190px) 1fr; gap: 4px 16px; margin: 4px 0 0; }
+:where(.sc) .kv dt { color: var(--muted); font-size: var(--fs-small); padding-top: 2px; }
+:where(.sc) .kv dd { margin: 0; color: var(--ink-strong); min-width: 0; overflow-wrap: anywhere; }
+:where(.sc) .acct-card .src { font-size: var(--fs-small); margin-top: 6px; }
+:where(.sc) .lead2 { margin: -4px 0 12px; }
+:where(.sc) ul.plain { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+:where(.sc) .acct-card.staff { background: #fff; border: 1px dashed var(--line); }
+:where(.sc) .staff-h { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+:where(.sc) .staff-h h2 { margin: 0; }
+:where(.sc) .staff-lock { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-small); color: var(--muted); }
+:where(.sc) .staff-lock .lock-ico { width: 14px; height: 14px; }
+html body :where(.sc) [data-cid="ds-product-tag"].later-tag.later-tag { background-color: var(--role-bg); color: var(--role-text); }
+:where(.sc) .sub-sec { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+:where(.sc) .sub-sec > h3 { font-size: var(--fs-base); font-weight: var(--strong); color: var(--ink-strong); margin: 0 0 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+:where(.sc) .note { font-size: var(--fs-small); color: var(--muted); }
+@media (max-width: 768px) {
+:where(.sc) .kv { grid-template-columns: 1fr; gap: 0; }
+:where(.sc) .kv dd { margin-bottom: 8px; }
+}
+:where(.sc) .sub-head { margin: 24px 0 8px; }
+:where(.sc) .sub-head h2 { margin: 0; }
+:where(.sc) .upslot { display: flex; align-items: center; justify-content: center; text-align: center; min-height: 72px; padding: 12px; border: 1px dashed var(--blue); background: var(--info); color: var(--blue-link); cursor: pointer; overflow-wrap: anywhere; }
+:where(.sc) .upslot.on { border-style: solid; color: var(--ink-strong); }
+:where(.sc) .upslot input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+:where(.sc) .upslot:focus-within { outline: 2px solid var(--blue); outline-offset: 2px; }
+:where(.sc) .cell-sub { display: block; font-size: var(--fs-small); color: var(--muted); margin-top: 2px; }
+:where(.sc) .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+:where(.sc) .addr-box { border: 1px solid var(--line); padding: 12px; margin-bottom: 12px; background: #fff; }
+:where(.sc) .addr-box-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+:where(.sc) .addr-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 2px 0; }
+:where(.sc) .addr-row .cell-sub { flex-basis: 100%; }
+:where(.sc).acct-drawer .sub-sec:first-of-type, :where(.sc) .acct-drawer .sub-sec:first-of-type { margin-top: 0; }
+@media (max-width: 768px) {
+:where(.sc) .row3 { grid-template-columns: 1fr; }
+}
+:where(.sc) .sec-h.first { margin-top: 0; }
+:where(.sc) .mb-btn { margin: 12px 0 0; }
+:where(.sc) .acct .lbl-t, :where(.sc).acct-drawer .lbl-t, :where(.sc) .acct-drawer .lbl-t, :where(.sc).acct-drawer legend, :where(.sc) .acct-drawer legend, :where(.sc)[role="dialog"] .lbl-t, :where(.sc) [role="dialog"] .lbl-t { font-size: var(--fs-lbl); font-weight: var(--strong); color: var(--ink-strong); display: block; }
+/* avatar + user block in the administration menu */
+:where(.sc) .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: 14px; font-weight: 600; flex: none; }
+:where(.sc) .acct .user-box .who { align-items: center; justify-content: flex-start; gap: 12px; }
+:where(.sc) .acct .user-box .who span:not(.avatar) { display: block; overflow-wrap: anywhere; }
+:where(.sc) .addr-acc { margin-top: 12px; }
