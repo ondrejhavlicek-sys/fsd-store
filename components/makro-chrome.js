@@ -16,10 +16,9 @@
       .format(n)
       .replace(/ /g, nbsp) + nbsp + 'Kč'
 
-  const DEFAULT_MENUS = {
-    food: ['Ovoce a zelenina', 'Čerstvé, chlazené', 'Mražené', 'Trvanlivé potraviny', 'Nápoje', 'Pečivo a cukrářské výrobky'],
-    nonfood: ['Úklid a hygiena', 'Obaly a jednorázové nádobí', 'Kuchyňské vybavení', 'Kancelář a papír'],
-  }
+  /* thumbnails for the few mega-menu blocks we have photos for; the makro.cz category data carries no images */
+  const THUMBS = { Ovoce: 'assets/tiles/t01.png', 'Masné výrobky': 'assets/tiles/parky.png' }
+  const IMPLEMENTED = 'Párky, špekáčky, točené salámy'
 
   ProtoKit.MakroHeader = {
     props: {
@@ -34,8 +33,8 @@
       cartNet: { type: Number, default: 0 },
       /** cart total including VAT, in CZK */
       cartGross: { type: Number, default: 0 },
-      /** { food: [labels], nonfood: [labels] } for the two category dropdowns */
-      menus: { type: Object, default: () => DEFAULT_MENUS },
+      /** category tree for the mega-menu, see js/nav-data.js: [[root, [[group, [[block, n, [children]]]]]]] */
+      navTree: { type: Array, default: () => (window.Makro && window.Makro.navTree) || [] },
       /** the cart preview panel (slot "cart") is open */
       cartOpen: { type: Boolean, default: false },
     },
@@ -43,7 +42,56 @@
     setup(props, { emit }) {
       const term = Vue.computed({ get: () => props.modelValue, set: (v) => emit('update:modelValue', v) })
       const submit = () => emit('search', props.modelValue)
-      return { ICONS, term, submit, money, src: (name) => base() + 'assets/' + name }
+
+      /* ---- mega-menu (Košík.cz "Produkty" pattern): left list of groups, right side blocks with their children ---- */
+      const roots = Vue.computed(() =>
+        props.navTree.map(([name, groups]) => ({
+          name,
+          groups: groups.map(([gn, blocks]) => ({ name: gn.trim(), blocks: blocks.map(([bn, n, kids]) => ({ name: bn.trim(), n, kids: kids.map((k) => k.trim()) })) })),
+        })),
+      )
+      const openRoot = Vue.ref(null)
+      const activeGroup = Vue.ref(0)
+      const group = Vue.computed(() => (openRoot.value === null ? null : roots.value[openRoot.value].groups[activeGroup.value]))
+      const focusList = () => Vue.nextTick(() => document.getElementById('mk-l1-' + activeGroup.value)?.focus())
+      const closeMenu = (refocus) => {
+        const i = openRoot.value
+        openRoot.value = null
+        if (refocus && i !== null) Vue.nextTick(() => document.getElementById('mk-root-' + i)?.focus())
+      }
+      const toggleRoot = (i, e) => {
+        if (openRoot.value === i) return closeMenu(false)
+        openRoot.value = i
+        activeGroup.value = 0
+        if (e && e.detail === 0) focusList() // opened from the keyboard
+      }
+      const rootDown = (i) => { if (openRoot.value !== i) { openRoot.value = i; activeGroup.value = 0 } focusList() }
+      const listKey = (e) => {
+        const n = roots.value[openRoot.value].groups.length
+        const move = { ArrowDown: 1, ArrowUp: -1 }[e.key]
+        if (move) { e.preventDefault(); activeGroup.value = (activeGroup.value + move + n) % n; focusList() }
+        else if (e.key === 'Home') { e.preventDefault(); activeGroup.value = 0; focusList() }
+        else if (e.key === 'End') { e.preventDefault(); activeGroup.value = n - 1; focusList() }
+        else if (e.key === 'ArrowRight') { e.preventDefault(); document.querySelector('.mk-mega-all')?.focus() }
+      }
+      const go = (label) => { emit('navigate', { label }); closeMenu(false) }
+      const hrefFor = (label) => (label === IMPLEMENTED && window.Makro ? window.Makro.categoryHash : '#')
+      const onDoc = (e) => { if (openRoot.value !== null && !e.target.closest('.mk-sub')) closeMenu(false) }
+      const onKey = (e) => { if (e.key === 'Escape' && openRoot.value !== null) closeMenu(true) }
+      const onHash = () => closeMenu(false)
+      Vue.onMounted(() => {
+        document.addEventListener('pointerdown', onDoc)
+        document.addEventListener('keydown', onKey)
+        window.addEventListener('hashchange', onHash)
+      })
+      Vue.onUnmounted(() => {
+        document.removeEventListener('pointerdown', onDoc)
+        document.removeEventListener('keydown', onKey)
+        window.removeEventListener('hashchange', onHash)
+      })
+      Vue.watch(() => props.cartOpen, (v) => v && closeMenu(false))
+
+      return { ICONS, term, submit, money, roots, openRoot, activeGroup, group, toggleRoot, rootDown, listKey, closeMenu, go, hrefFor, thumb: (n) => THUMBS[n], src: (name) => base() + 'assets/' + name }
     },
     template: `
       <header class="mk-header" data-tid="app-header">
@@ -76,12 +124,9 @@
         <div class="mk-sub">
           <div class="mk-wrap mk-sub-in">
             <nav class="mk-nav" aria-label="Hlavní navigace">
-              <ds-dropdown-menu v-for="k in ['food', 'nonfood']" :key="k" align="start">
-                <template #trigger>
-                  <button type="button" class="mk-nav-item"><span>{{ k === 'food' ? 'Potraviny' : 'Nepotravinové zboží' }}</span><component :is="ICONS.ChevronDownSolid" class="mk-chev tw-icon-ds-20"></component></button>
-                </template>
-                <ds-dropdown-menu-item v-for="l in menus[k]" :key="l" :label="l" @select="$emit('navigate', { label: l })"></ds-dropdown-menu-item>
-              </ds-dropdown-menu>
+              <button v-for="(r, i) in roots" :key="r.name" :id="'mk-root-' + i" type="button" class="mk-nav-item" :class="{ open: openRoot === i }" aria-controls="mk-mega" :aria-expanded="openRoot === i" @click="toggleRoot(i, $event)" @keydown.down.prevent="rootDown(i)">
+                <span>{{ r.name }}</span><component :is="ICONS.ChevronDownSolid" class="mk-chev tw-icon-ds-20"></component>
+              </button>
               <button type="button" class="mk-nav-item" @click="$emit('shopping-lists')"><span>Nákupní seznamy</span><img :src="src('icons/shopping-list.svg')" alt="" width="24" height="24"></button>
               <button type="button" class="mk-nav-item" title="Zopakovat poslední objednávku" aria-label="Zopakovat poslední objednávku" @click="$emit('repeat-order')"><img :src="src('icons/rotate.svg')" alt="" width="24" height="24"><span>Zopakovat poslední objednávku</span></button>
             </nav>
@@ -94,6 +139,33 @@
               <button type="button" class="mk-checkout" @click="$emit('checkout')">K pokladně</button>
               <div v-if="cartOpen" class="mk-cart-pop" id="cart-preview" role="region" aria-label="Náhled košíku"><slot name="cart"></slot></div>
               <div v-if="cartOpen" class="mk-cart-backdrop" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div v-if="group" id="mk-mega" class="mk-mega" role="region" :aria-label="roots[openRoot].name">
+            <button type="button" class="mk-mega-x" aria-label="Zavřít menu" @click="closeMenu(true)">✕</button>
+            <div class="mk-wrap mk-mega-in">
+              <ul class="mk-mega-list" aria-label="Kategorie" @keydown="listKey">
+                <li v-for="(g, gi) in roots[openRoot].groups" :key="g.name">
+                  <button :id="'mk-l1-' + gi" type="button" class="mk-mega-l1" :class="{ on: activeGroup === gi }" :aria-current="activeGroup === gi ? 'true' : undefined" @mouseenter="activeGroup = gi" @focus="activeGroup = gi" @click="go(g.name)">{{ g.name }}</button>
+                </li>
+              </ul>
+              <div class="mk-mega-body">
+                <a :href="hrefFor(group.name)" class="mk-mega-all" @click.prevent="go(group.name)">Vše z kategorie {{ group.name }} <span aria-hidden="true">→</span></a>
+                <p v-if="!group.blocks.length" class="mk-mega-empty">Tato kategorie zatím nemá podkategorie.</p>
+                <ul class="mk-mega-blocks">
+                  <li v-for="b in group.blocks" :key="b.name" class="mk-mega-block">
+                    <span class="mk-mega-thumb" aria-hidden="true"><img v-if="thumb(b.name)" :src="thumb(b.name)" alt=""><b v-else>{{ b.name.charAt(0) }}</b></span>
+                    <div class="mk-mega-txt">
+                      <a :href="hrefFor(b.name)" class="mk-mega-l2" @click.prevent="go(b.name)">{{ b.name }}</a>
+                      <ul v-if="b.kids.length">
+                        <li v-for="k in b.kids.slice(0, 4)" :key="k"><a :href="hrefFor(k)" @click.prevent="go(k)">{{ k }}</a></li>
+                        <li v-if="b.n > 4"><a :href="hrefFor(b.name)" class="mk-mega-more" @click.prevent="go(b.name)">+ Další<span class="mk-sr"> v kategorii {{ b.name }}</span></a></li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

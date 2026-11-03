@@ -38,7 +38,7 @@
         @checkout="goCart"
         @shopping-lists="soon('Nákupní seznamy')"
         @repeat-order="soon('Zopakování objednávky')"
-        @navigate="soon('Navigace')">
+        @navigate="navigate">
         <template #cart><makro-cart-preview @close="closeCart(true)" @open-cart="goCart"></makro-cart-preview></template>
       </makro-header>
       <router-view></router-view>
@@ -47,6 +47,7 @@
     </div>
 
     <script src="js/fresh.js"></script>
+    <script src="js/nav-data.js"></script>
     <script src="components/makro-chrome.js"></script>
     <script src="js/store.js"></script>
     <script src="components/makro-product-box.js"></script>
@@ -78,7 +79,8 @@
             document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCart(true) })
           })
           const focusMain = () => { const m = document.querySelector('main'); if (m) { m.setAttribute('tabindex', '-1'); m.focus() } }
-          return { query, totals, cartOpen, closeCart, goCart, focusMain, store: M.store, soon: (what) => M.toast(what + ' zatím není součástí prototypu.') }
+          const navigate = (e) => { if (e.label === M.category.title) location.hash = M.categoryHash; else M.toast('Kategorie „' + e.label + '“ zatím není součástí prototypu.') }
+          return { query, totals, cartOpen, closeCart, goCart, focusMain, navigate, store: M.store, soon: (what) => M.toast(what + ' zatím není součástí prototypu.') }
         },
       })
       app.component('MakroCartPreview', M.CartPreview)
