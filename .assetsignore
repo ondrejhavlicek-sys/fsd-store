@@ -1,0 +1,10 @@
+.git
+.claude
+.gitignore
+.assetsignore
+.wrangler
+node_modules
+docs
+README.md
+serve.py
+wrangler.toml
