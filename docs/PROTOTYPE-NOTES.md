@@ -10,7 +10,8 @@ Start it with `python3 serve.py 5190` and open `http://localhost:5190/index.html
 | `#/` | Homepage | no Figma frame; kit homepage, kosik.cz, live makro homepage |
 | `#/kategorie/parky-spekacky-tocene-salamy` | Category page | Figma FSD-Store `18:5253` |
 | `#/produkt/:id` | Product detail (35 mock products) | no Figma frame; kosik.cz and live makro product page |
-| `#/kosik` | Cart | no Figma frame; live makro cart |
+| `#/kosik` | Cart, makro layout (variant A) | no Figma frame; live makro cart |
+| `#/kosik?variant=b` | Cart, Košík layout (variant B): simplified header, top bar with total, items grouped by category, progress card (minimum order instead of free delivery), delivery card, summary; the "Prototyp" pill in the corner switches between the two | screenshot of the Košík.cz basket (checkout.ondraux.kosik.design) |
 | `#/pokladna` | Checkout (order recap) | data model draft hooks; no live reference |
 | `#/objednavka` | Order confirmation | – |
 | header cart button | Cart preview (popover, bottom sheet on mobile) | live makro cart panel, kosik.cz preview |
@@ -33,7 +34,7 @@ Shell: header, navigation bar and footer from the Figma draft (`18:5299`, `18:53
 - **Sale tag** uses `#e01f56` from this draft (earlier selfcare work used `#990052`); one variable, `--mk-sale`.
 - Product 3 shows an unit price (93,00 Kč/kg) copied from the Figma that does not match its price.
 - Product photos are 206 px wide, soft when enlarged.
-- **Mega-menu**: only the category "Párky, špekáčky, točené salámy" opens a page; every other link shows a toast. Block thumbnails exist only for Ovoce and Masné výrobky, the rest show a letter placeholder because makro.cz category data has no images. Each block lists four children and "+ Další", as on Košík.cz. The menu opens on hover (100 ms delay) and on click; a click pins it open until Esc, a click outside or on the overlay. The gray overlay copies Košík.cz: transparent at the nav bar, 15 % black from 20 vh below it (`--mk-backdrop-color` in `css/chrome.css`).
+- **Mega-menu**: only the category "Párky, špekáčky, točené salámy" opens a page; every other link shows a toast. Block thumbnails exist only for Ovoce and Masné výrobky, the rest show a letter placeholder because makro.cz category data has no images. Each block lists four children and "+ Další", as on Košík.cz. The menu is a card aligned to the page container (max 1430 px, radius 0/8/8/8, light shadow, no gap under the nav bar) with the open trigger as a joined white tab, as measured on Košík.cz. It opens on hover after 250 ms and on click (a click within 500 ms of the hover pins it, a later click closes it); leaving closes it after 250 ms unless pinned. Esc inside the right side goes back to the list, a second Esc closes. The page does not scroll while it is open. The gray overlay copies Košík.cz: transparent at the nav bar, 15 % black from 20 vh below it (`--mk-backdrop-color` in `css/chrome.css`). Not copied: the diagonal-hover cone, 2-D arrow navigation in the right side and the height animation.
 - Contrast: a few colours were darkened from the Figma values to reach 4.5:1 (sale note text, unavailable text, form placeholders).
 
 ## Not built

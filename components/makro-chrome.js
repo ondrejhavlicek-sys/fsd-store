@@ -37,6 +37,8 @@
       navTree: { type: Array, default: () => (window.Makro && window.Makro.navTree) || [] },
       /** the cart preview panel (slot "cart") is open */
       cartOpen: { type: Boolean, default: false },
+      /** simplified header (logo, search, account) as on the Košík.cz basket page: no address and no navigation bar */
+      simple: { type: Boolean, default: false },
     },
     emits: ['update:modelValue', 'search', 'address', 'notifications', 'user-menu', 'cart-toggle', 'checkout', 'navigate', 'repeat-order', 'shopping-lists'],
     setup(props, { emit }) {
@@ -137,11 +139,11 @@
       return { ICONS, term, submit, money, roots, openRoot, activeGroup, group, subEl, navBottom, hoverOpen, hoverLeave, clearTimer, toggleRoot, rootDown, listKey, closeMenu, go, hrefFor, thumb: (n) => THUMBS[n], src: (name) => base() + 'assets/' + name }
     },
     template: `
-      <header class="mk-header" data-tid="app-header">
+      <header class="mk-header" :class="{ 'is-simple': simple }" data-tid="app-header">
         <div class="mk-top">
           <div class="mk-wrap mk-top-in">
             <a class="mk-logo" href="#/" aria-label="makro"><img :src="src('brand/makro-logo.svg')" alt="makro" width="129" height="32"></a>
-            <button type="button" class="mk-addr" @click="$emit('address')">
+            <button v-if="!simple" type="button" class="mk-addr" @click="$emit('address')">
               <span class="mk-addr-txt"><small>Vybraná dodací adresa</small><b>{{ deliveryAddress }}</b></span>
               <img :src="src('icons/chevron-right.svg')" alt="" width="20" height="20">
             </button>
@@ -158,13 +160,13 @@
               <button type="button" class="mk-circ mk-user" aria-label="Můj účet" @click="$emit('user-menu')">{{ userInitials }}</button>
             </div>
           </div>
-          <button type="button" class="mk-addr-bar" @click="$emit('address')">
+          <button v-if="!simple" type="button" class="mk-addr-bar" @click="$emit('address')">
             <span>Doručení: <b>{{ deliveryAddress }}</b></span>
             <img :src="src('icons/chevron-right.svg')" alt="" width="18" height="18">
           </button>
         </div>
 
-        <div class="mk-sub" ref="subEl" :style="{ '--mk-nav-bottom': navBottom + 'px' }">
+        <div v-if="!simple" class="mk-sub" ref="subEl" :style="{ '--mk-nav-bottom': navBottom + 'px' }">
           <div class="mk-wrap mk-sub-in">
             <nav class="mk-nav" aria-label="Hlavní navigace">
               <button v-for="(r, i) in roots" :key="r.name" :id="'mk-root-' + i" type="button" class="mk-nav-item" :class="{ open: openRoot === i }" aria-controls="mk-mega" :aria-expanded="openRoot === i" @click="toggleRoot(i, $event)" @keydown.down.prevent="rootDown(i)" @pointerenter="hoverOpen(i, $event)" @pointerleave="hoverLeave($event)">
