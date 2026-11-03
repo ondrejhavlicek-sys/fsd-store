@@ -37,6 +37,8 @@
       navTree: { type: Array, default: () => (window.Makro && window.Makro.navTree) || [] },
       /** the cart preview panel (slot "cart") is open */
       cartOpen: { type: Boolean, default: false },
+      /** simplified header (logo, search, account) as on the Košík.cz basket page: no address and no navigation bar */
+      simple: { type: Boolean, default: false },
     },
     emits: ['update:modelValue', 'search', 'address', 'notifications', 'user-menu', 'cart-toggle', 'checkout', 'navigate', 'repeat-order', 'shopping-lists'],
     setup(props, { emit }) {
@@ -65,6 +67,7 @@
          click outside, the overlay, Esc or the trigger again); touch devices only use the click. */
       const pinned = Vue.ref(false)
       let timer = null
+      let hoverOpenedAt = 0
       const clearTimer = () => { clearTimeout(timer); timer = null }
       const later = (fn, ms) => { clearTimer(); timer = setTimeout(fn, ms) }
       const isMouse = (e) => !e || !e.pointerType || e.pointerType === 'mouse'
@@ -73,12 +76,13 @@
         clearTimer()
         if (openRoot.value === i) return
         const set = () => { openRoot.value = i; activeGroup.value = 0 }
-        if (openRoot.value === null) later(set, 100); else set()
+        if (openRoot.value === null) later(() => { set(); hoverOpenedAt = Date.now() }, 250); else set()
       }
-      const hoverLeave = (e) => { if (isMouse(e) && !pinned.value && openRoot.value !== null) later(() => closeMenu(false), 150) }
+      const hoverLeave = (e) => { if (isMouse(e) && !pinned.value && openRoot.value !== null) later(() => closeMenu(false), 250) }
       const toggleRoot = (i, e) => {
         clearTimer()
-        if (openRoot.value === i) { if (!pinned.value) { pinned.value = true; return } return closeMenu(false) }
+        // as on Košík.cz: a click right after the hover opened it pins it, a later click closes it
+        if (openRoot.value === i) { if (!pinned.value && Date.now() - hoverOpenedAt < 500) { pinned.value = true; return } return closeMenu(false) }
         openRoot.value = i
         activeGroup.value = 0
         pinned.value = true
@@ -91,18 +95,29 @@
         if (move) { e.preventDefault(); activeGroup.value = (activeGroup.value + move + n) % n; focusList() }
         else if (e.key === 'Home') { e.preventDefault(); activeGroup.value = 0; focusList() }
         else if (e.key === 'End') { e.preventDefault(); activeGroup.value = n - 1; focusList() }
-        else if (e.key === 'ArrowRight') { e.preventDefault(); document.querySelector('.mk-mega-all')?.focus() }
+        else if (e.key === 'ArrowRight') { e.preventDefault(); document.querySelector('.mk-mega-l2')?.focus() }
       }
       const go = (label) => { emit('navigate', { label }); closeMenu(false) }
       const hrefFor = (label) => (label === IMPLEMENTED && window.Makro ? window.Makro.categoryHash : '#')
       const onDoc = (e) => { if (openRoot.value !== null && !e.target.closest('.mk-sub')) closeMenu(false) }
-      const onKey = (e) => { if (e.key === 'Escape' && openRoot.value !== null) closeMenu(true) }
+      const onKey = (e) => {
+        if (e.key !== 'Escape' || openRoot.value === null) return
+        // Esc inside the right side goes back to the list first, a second Esc closes the menu
+        if (document.activeElement && document.activeElement.closest('.mk-mega-body')) { focusList(); return }
+        closeMenu(true)
+      }
       const onHash = () => closeMenu(false)
       /* the overlay starts at the bottom edge of the navigation bar (it fades in below it, like Košík.cz) */
       const subEl = Vue.ref(null)
       const navBottom = Vue.ref(0)
       const measure = () => { if (subEl.value) navBottom.value = Math.max(0, Math.round(subEl.value.getBoundingClientRect().bottom)) }
-      Vue.watch(openRoot, (v) => v !== null && Vue.nextTick(measure))
+      /* like Košík.cz: the page does not scroll while the menu is open (the scrollbar width is kept to avoid a layout jump) */
+      const lockScroll = (on) => {
+        const b = document.body
+        if (on) { const sw = window.innerWidth - document.documentElement.clientWidth; b.style.overflow = 'hidden'; if (sw > 0) b.style.paddingRight = sw + 'px' }
+        else { b.style.overflow = ''; b.style.paddingRight = '' }
+      }
+      Vue.watch(openRoot, (v) => { lockScroll(v !== null); if (v !== null) Vue.nextTick(measure) })
       Vue.onMounted(() => {
         window.addEventListener('scroll', measure, { passive: true })
         window.addEventListener('resize', measure)
@@ -114,6 +129,7 @@
         window.removeEventListener('scroll', measure)
         window.removeEventListener('resize', measure)
         clearTimer()
+        lockScroll(false)
         document.removeEventListener('pointerdown', onDoc)
         document.removeEventListener('keydown', onKey)
         window.removeEventListener('hashchange', onHash)
@@ -123,11 +139,11 @@
       return { ICONS, term, submit, money, roots, openRoot, activeGroup, group, subEl, navBottom, hoverOpen, hoverLeave, clearTimer, toggleRoot, rootDown, listKey, closeMenu, go, hrefFor, thumb: (n) => THUMBS[n], src: (name) => base() + 'assets/' + name }
     },
     template: `
-      <header class="mk-header" data-tid="app-header">
+      <header class="mk-header" :class="{ 'is-simple': simple }" data-tid="app-header">
         <div class="mk-top">
           <div class="mk-wrap mk-top-in">
             <a class="mk-logo" href="#/" aria-label="makro"><img :src="src('brand/makro-logo.svg')" alt="makro" width="129" height="32"></a>
-            <button type="button" class="mk-addr" @click="$emit('address')">
+            <button v-if="!simple" type="button" class="mk-addr" @click="$emit('address')">
               <span class="mk-addr-txt"><small>Vybraná dodací adresa</small><b>{{ deliveryAddress }}</b></span>
               <img :src="src('icons/chevron-right.svg')" alt="" width="20" height="20">
             </button>
@@ -144,13 +160,13 @@
               <button type="button" class="mk-circ mk-user" aria-label="Můj účet" @click="$emit('user-menu')">{{ userInitials }}</button>
             </div>
           </div>
-          <button type="button" class="mk-addr-bar" @click="$emit('address')">
+          <button v-if="!simple" type="button" class="mk-addr-bar" @click="$emit('address')">
             <span>Doručení: <b>{{ deliveryAddress }}</b></span>
             <img :src="src('icons/chevron-right.svg')" alt="" width="18" height="18">
           </button>
         </div>
 
-        <div class="mk-sub" ref="subEl">
+        <div v-if="!simple" class="mk-sub" ref="subEl" :style="{ '--mk-nav-bottom': navBottom + 'px' }">
           <div class="mk-wrap mk-sub-in">
             <nav class="mk-nav" aria-label="Hlavní navigace">
               <button v-for="(r, i) in roots" :key="r.name" :id="'mk-root-' + i" type="button" class="mk-nav-item" :class="{ open: openRoot === i }" aria-controls="mk-mega" :aria-expanded="openRoot === i" @click="toggleRoot(i, $event)" @keydown.down.prevent="rootDown(i)" @pointerenter="hoverOpen(i, $event)" @pointerleave="hoverLeave($event)">
@@ -171,8 +187,8 @@
             </div>
           </div>
 
-          <div v-if="group" class="mk-mega-backdrop" :style="{ '--mk-nav-bottom': navBottom + 'px' }" aria-hidden="true" @pointerenter="hoverLeave($event)" @click="closeMenu(false)"></div>
-          <div v-if="group" id="mk-mega" class="mk-mega" role="region" :aria-label="roots[openRoot].name" @pointerenter="clearTimer" @pointerleave="hoverLeave($event)">
+          <div v-if="group" class="mk-mega-backdrop" aria-hidden="true" @pointerenter="hoverLeave($event)" @click="closeMenu(false)"></div>
+          <div v-if="group" id="mk-mega" class="mk-mega" :class="{ 'is-first': openRoot === 0 }" role="region" :aria-label="roots[openRoot].name" @pointerenter="clearTimer" @pointerleave="hoverLeave($event)">
             <button type="button" class="mk-mega-x" aria-label="Zavřít menu" @click="closeMenu(true)">✕</button>
             <div class="mk-wrap mk-mega-in">
               <ul class="mk-mega-list" aria-label="Kategorie" @keydown="listKey">
@@ -185,7 +201,7 @@
                 <p v-if="!group.blocks.length" class="mk-mega-empty">Tato kategorie zatím nemá podkategorie.</p>
                 <ul class="mk-mega-blocks">
                   <li v-for="b in group.blocks" :key="b.name" class="mk-mega-block">
-                    <span class="mk-mega-thumb" aria-hidden="true"><img v-if="thumb(b.name)" :src="thumb(b.name)" alt=""><b v-else>{{ b.name.charAt(0) }}</b></span>
+                    <span class="mk-mega-thumb" :class="{ ph: !thumb(b.name) }" aria-hidden="true"><img v-if="thumb(b.name)" :src="thumb(b.name)" alt=""><b v-else>{{ b.name.charAt(0) }}</b></span>
                     <div class="mk-mega-txt">
                       <a :href="hrefFor(b.name)" class="mk-mega-l2" @click.prevent="go(b.name)">{{ b.name }}</a>
                       <ul v-if="b.kids.length">

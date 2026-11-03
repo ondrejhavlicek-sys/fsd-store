@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="css/home.css" />
     <link rel="stylesheet" href="css/cart.css" />
     <link rel="stylesheet" href="css/checkout.css" />
+    <link rel="stylesheet" href="css/cart-b.css" />
     <script src="vendor/vue.global.js"></script>
     <script src="vendor/kosik-ui.js"></script>
     <script src="vendor/tailwind-play.js"></script>
@@ -30,6 +31,7 @@
         :cart-net="totals.net"
         :cart-gross="totals.gross"
         :cart-open="cartOpen"
+        :simple="$route.path === '/kosik' && $route.query.variant === 'b'"
         @search="soon('Vyhledávání')"
         @address="soon('Výběr dodací adresy')"
         @notifications="soon('Oznámení')"
@@ -43,6 +45,7 @@
       </makro-header>
       <router-view></router-view>
       <makro-footer @link="soon('Odkaz v patičce')"></makro-footer>
+      <makro-variant-switch v-if="$route.path === '/kosik'" :current="$route.query.variant === 'b' ? 'b' : 'a'"></makro-variant-switch>
       <div v-if="store.toast" class="mk-toast" role="status">{{ store.toast }}</div>
     </div>
 
@@ -56,6 +59,7 @@
     <script src="components/makro-product-page.js"></script>
     <script src="components/makro-home-page.js"></script>
     <script src="components/makro-cart-page.js"></script>
+    <script src="components/makro-cart-page-b.js"></script>
     <script src="components/makro-checkout-page.js"></script>
     <script>
       const { createRouter, createWebHashHistory } = KosikUI.vueRouter
@@ -84,6 +88,7 @@
         },
       })
       app.component('MakroCartPreview', M.CartPreview)
+      app.component('MakroVariantSwitch', M.VariantSwitch)
       KosikUI.install(app)
       app.component('MakroHeader', ProtoKit.MakroHeader)
       app.component('MakroFooter', ProtoKit.MakroFooter)
@@ -92,7 +97,7 @@
           scrollBehavior: () => ({ top: 0 }),
           routes: [
             { path: '/produkt/:id', component: M.ProductPage, props: true },
-            { path: '/kosik', component: M.CartPage },
+            { path: '/kosik', component: M.CartRoute },
             { path: '/pokladna', component: M.CheckoutPage },
             { path: '/objednavka', component: M.OrderDonePage },
             { path: '/kategorie/:slug', component: M.CategoryPage },
@@ -102,7 +107,7 @@
       /* page titles and focus: set the document title per route; after navigating inside the app move focus to the page */
       const titles = (to) => {
         if (to.path.startsWith('/produkt/')) return (M.byId(to.params.id) || {}).name || 'Produkt nenalezen'
-        if (to.path === '/kosik') return 'Košík'
+        if (to.path === '/kosik') return to.query.variant === 'b' ? 'Košík (rozložení Košíku)' : 'Košík'
         if (to.path === '/pokladna') return 'Rekapitulace objednávky'
         if (to.path === '/objednavka') return 'Objednávka'
         if (to.path.startsWith('/kategorie/')) return M.category.title
