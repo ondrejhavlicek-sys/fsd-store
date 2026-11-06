@@ -9,7 +9,7 @@
   const GROUPS = { ovoce: 'Ovoce a zelenina', masne: 'Masné výrobky' }
 
   Makro.CartPageB = {
-    components: { MakroProductRail: Makro.ProductRail },
+    components: { MakroProductRail: Makro.ProductRail, MakroCartFinder: Makro.CartFinder, MakroCartFilter: Makro.CartFilter },
     setup() {
       const store = Makro.store
       const left = Makro.useCountdown()
@@ -22,9 +22,12 @@
           return { p, q, total: Makro.round2(unit * q), other: Makro.round2((gross ? p.net : p.gross) * q), oldTotal: old ? Makro.round2(old * q) : null, saved: old ? Makro.round2((old - unit) * q) : 0, weighed: p.pack.startsWith('cca') }
         }),
       )
+      /* local filter ("Vyhledávání položek"): totals, savings and the summary always use all lines */
+      const itemQuery = Vue.ref('')
+      const visible = Vue.computed(() => lines.value.filter((l) => Makro.matches(l.p, itemQuery.value)))
       const groups = Vue.computed(() => {
         const out = []
-        lines.value.forEach((l) => {
+        visible.value.forEach((l) => {
           const name = GROUPS[l.p.cat] || 'Ostatní'
           let g = out.find((x) => x.name === name)
           if (!g) out.push((g = { name, lines: [] }))
@@ -48,17 +51,6 @@
       Vue.watch(accepted, (v) => v && (showTermsError.value = false))
       const proceed = () => { if (!accepted.value) { showTermsError.value = true; return } location.hash = '#/pokladna' }
 
-      const code = Vue.ref('')
-      const quick = Vue.reactive({ msg: '', err: false })
-      const quickAdd = () => {
-        const v = code.value.trim()
-        if (!v) return
-        const p = Makro.addByCode(v)
-        quick.err = !p
-        quick.msg = p ? 'Přidáno do košíku: ' + p.name : 'Produkt s kódem ' + v + ' jsme nenašli. Zkuste například 241626.'
-        if (p) code.value = ''
-      }
-
       const menuOpen = Vue.ref(false)
       const soon = (what) => { menuOpen.value = false; Makro.toast(what + ' zatím není součástí prototypu.') }
       const clear = () => { menuOpen.value = false; Makro.clearCart(); Makro.toast('Košík je vyprázdněný.') }
@@ -70,7 +62,7 @@
       const typed = (id, e) => { const n = parseInt(e.target.value, 10); Makro.setQty(id, isNaN(n) ? 0 : n); e.target.value = store.cart[id] || 0 }
       const usual = Vue.computed(() => Makro.products.filter((p) => !store.cart[p.id] && p.cat === 'ovoce' && p.today).slice(0, 7))
 
-      return { changeAddress: () => window.AddrDrawer && window.AddrDrawer.open(), store, sum, groups, saved, hasWeighed, headTotal, split, missing, pct, left, slots: Makro.slots, slotKey, delivery: Makro.delivery, min: Makro.minOrder, accepted, showTermsError, proceed, code, quick, quickAdd, menuOpen, soon, clear, typed, usual, setQty: Makro.setQty, setVat: Makro.setVat, plural: Makro.plural, kc: Makro.kc, num: Makro.num, src: (n) => base() + 'assets/' + n }
+      return { changeAddress: () => window.AddrDrawer && window.AddrDrawer.open(), store, sum, groups, saved, hasWeighed, headTotal, split, missing, pct, left, slots: Makro.slots, slotKey, delivery: Makro.delivery, min: Makro.minOrder, accepted, showTermsError, proceed, itemQuery, visible, hl: (t) => Makro.highlight(t, itemQuery.value), menuOpen, soon, clear, typed, usual, setQty: Makro.setQty, setVat: Makro.setVat, plural: Makro.plural, kc: Makro.kc, num: Makro.num, src: (n) => base() + 'assets/' + n }
     },
     template: `
       <div class="mk-cb" data-tid="cart-page-b">
@@ -89,6 +81,8 @@
         <main class="mk-cb-main">
           <div class="mk-cb-grid">
             <div class="mk-cb-left">
+              <makro-cart-finder class="mk-cb-find" @added="itemQuery = ''"></makro-cart-finder>
+
               <div class="mk-cb-head">
                 <h2><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11h10.2L20 7H6.2"/><circle cx="9" cy="19" r="1.6"/><circle cx="17" cy="19" r="1.6"/></svg>Obsah košíku <small>({{ sum.lines }} {{ plural(sum.lines, 'produkt', 'produkty', 'produktů') }})</small></h2>
                 <div class="mk-cb-menu">
@@ -106,12 +100,12 @@
                 </div>
               </div>
 
-              <form class="mk-cb-quick" @submit.prevent="quickAdd">
-                <label for="cb-quick">Rychlé přidání</label>
-                <input id="cb-quick" v-model="code" type="text" inputmode="numeric" autocomplete="off" placeholder="Kód produktu, např. 241626">
-                <button type="submit" class="mk-cb-btn-sec">Přidat</button>
-                <span v-if="quick.msg" class="mk-cb-quick-msg" :class="{ err: quick.err }" role="status">{{ quick.msg }}</span>
-              </form>
+              <makro-cart-filter v-if="sum.lines" v-model="itemQuery" :shown="visible.length" :total="sum.lines" class="mk-cb-filter"></makro-cart-filter>
+
+              <div v-if="sum.lines && !visible.length" class="mk-cb-nomatch" role="status">
+                <p>Žádná položka v košíku neodpovídá hledání „{{ itemQuery }}“.</p>
+                <button type="button" class="mk-cb-btn-sec" @click="itemQuery = ''">Zrušit vyhledávání</button>
+              </div>
 
               <div v-if="!sum.lines" class="mk-cb-empty">
                 <h2>Váš košík je prázdný</h2>
@@ -126,8 +120,8 @@
                     <button type="button" class="mk-cb-x" :aria-label="'Odebrat z košíku: ' + l.p.name" @click="setQty(l.p.id, 0)">✕</button>
                     <a :href="'#/produkt/' + l.p.id" class="mk-cb-thumb" :aria-label="l.p.name"><img :src="l.p.image" alt="" width="56" height="56"><span>{{ l.p.weight }}</span></a>
                     <div class="mk-cb-name">
-                      <a :href="'#/produkt/' + l.p.id">{{ l.p.name }}</a>
-                      <small>{{ l.p.code }} · {{ l.p.pack }}</small>
+                      <a :href="'#/produkt/' + l.p.id"><template v-for="s in hl(l.p.name)"><mark v-if="s.m">{{ s.t }}</mark><template v-else>{{ s.t }}</template></template></a>
+                      <small><template v-for="s in hl(l.p.code)"><mark v-if="s.m">{{ s.t }}</mark><template v-else>{{ s.t }}</template></template> · {{ l.p.pack }}</small>
                       <small v-if="!l.p.today" class="mk-cb-warn">Dnes nedostupné, doručíme po 2. 11. 2026</small>
                     </div>
                     <div class="mk-cb-step">
