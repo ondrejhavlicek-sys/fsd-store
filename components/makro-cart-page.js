@@ -6,7 +6,7 @@
   const base = () => window.MAKRO_BASE || ''
 
   Makro.CartPage = {
-    components: { MakroOrderStatus: Makro.OrderStatus, MakroProductRail: Makro.ProductRail },
+    components: { MakroOrderStatus: Makro.OrderStatus, MakroProductRail: Makro.ProductRail, MakroCartFinder: Makro.CartFinder, MakroCartFilter: Makro.CartFilter },
     setup() {
       const store = Makro.store
       const lines = Vue.computed(() =>
@@ -18,6 +18,9 @@
           }),
       )
       const sum = Vue.computed(() => Makro.summary())
+      /* local filter ("Vyhledávání položek"): the summary always uses all lines */
+      const itemQuery = Vue.ref('')
+      const visible = Vue.computed(() => lines.value.filter((l) => Makro.matches(l.p, itemQuery.value)))
       const missing = Vue.computed(() => Math.max(0, Makro.round2(Makro.minOrder.net - sum.value.goodsNet)))
       const slotKey = Vue.ref(0)
       Vue.watch(slotKey, (i) => Object.assign(Makro.delivery, { date: Makro.slots[i].date, slot: Makro.slots[i].slot }))
@@ -30,24 +33,13 @@
         location.hash = '#/pokladna'
       }
 
-      const code = Vue.ref('')
-      const quick = Vue.reactive({ msg: '', err: false })
-      const quickAdd = () => {
-        const v = code.value.trim()
-        if (!v) return
-        const p = Makro.addByCode(v)
-        quick.err = !p
-        quick.msg = p ? 'Přidáno do košíku: ' + p.name : 'Produkt s kódem ' + v + ' jsme nenašli. Zkuste například 241626.'
-        if (p) code.value = ''
-      }
-
       const setQty = (id, q) => Makro.setQty(id, q)
       const typed = (id, e) => { const n = parseInt(e.target.value, 10); setQty(id, isNaN(n) ? 0 : n); e.target.value = store.cart[id] || 0 }
       const soon = (what) => Makro.toast(what + ' zatím není součástí prototypu.')
       const clear = () => { Makro.clearCart(); Makro.toast('Košík je vyprázdněný.') }
       const usual = Vue.computed(() => Makro.products.filter((p) => !store.cart[p.id] && p.cat === 'ovoce' && p.today).slice(0, 7))
 
-      return { changeAddress: () => window.AddrDrawer && window.AddrDrawer.open(), store, lines, sum, missing, slots: Makro.slots, slotKey, delivery: Makro.delivery, min: Makro.minOrder, accepted, showTermsError, proceed, code, quick, quickAdd, setQty, typed, soon, clear, usual, kc: Makro.kc, num: Makro.num, openProduct: Makro.openProduct, src: (n) => base() + 'assets/' + n }
+      return { changeAddress: () => window.AddrDrawer && window.AddrDrawer.open(), store, lines, sum, missing, slots: Makro.slots, slotKey, delivery: Makro.delivery, min: Makro.minOrder, accepted, showTermsError, proceed, itemQuery, visible, hl: (t) => Makro.highlight(t, itemQuery.value), setQty, typed, soon, clear, usual, kc: Makro.kc, num: Makro.num, openProduct: Makro.openProduct, src: (n) => base() + 'assets/' + n }
     },
     template: `
       <main class="mk-wrap mk-page mk-cartpage" data-tid="cart-page">
@@ -70,14 +62,7 @@
 
         <div class="mk-cart-grid">
           <div class="mk-cart-main">
-            <form class="mk-quick" @submit.prevent="quickAdd">
-              <label for="quick-code">Rychlé přidání do košíku</label>
-              <div class="mk-quick-row">
-                <input id="quick-code" v-model="code" type="text" inputmode="numeric" autocomplete="off" placeholder="Zadejte kód produktu, např. 241626">
-                <button type="submit" class="mk-btn mk-btn-sec">Přidat</button>
-              </div>
-              <p v-if="quick.msg" class="mk-quick-msg" :class="{ err: quick.err }" role="status">{{ quick.msg }}</p>
-            </form>
+            <makro-cart-finder @added="itemQuery = ''"></makro-cart-finder>
 
             <section class="mk-card mk-deliv" aria-labelledby="h-deliv">
               <h2 id="h-deliv">Doručení</h2>
@@ -97,12 +82,21 @@
               <a class="mk-btn" href="#/">Pokračovat v nákupu</a>
             </div>
 
-            <ul v-else class="mk-lines" aria-label="Položky v košíku">
-              <li v-for="l in lines" :key="l.p.id" class="mk-line">
+            <div v-if="sum.lines" class="mk-lines-head">
+              <h2>Položky ({{ sum.lines }})</h2>
+              <makro-cart-filter v-model="itemQuery" :shown="visible.length" :total="sum.lines"></makro-cart-filter>
+            </div>
+            <div v-if="sum.lines && !visible.length" class="mk-card mk-nomatch" role="status">
+              <p>Žádná položka v košíku neodpovídá hledání „{{ itemQuery }}“.</p>
+              <button type="button" class="mk-btn mk-btn-sec" @click="itemQuery = ''">Zrušit vyhledávání</button>
+            </div>
+
+            <ul v-else-if="sum.lines" class="mk-lines" aria-label="Položky v košíku">
+              <li v-for="l in visible" :key="l.p.id" class="mk-line">
                 <a :href="'#/produkt/' + l.p.id" class="mk-line-img" :aria-label="l.p.name"><img :src="l.p.image" alt="" width="72" height="72"></a>
                 <div class="mk-line-info">
-                  <a :href="'#/produkt/' + l.p.id" class="mk-line-name">{{ l.p.name }}</a>
-                  <div class="mk-line-meta"><span>{{ l.p.code }}</span><span class="mk-pill">{{ l.p.pack }}</span></div>
+                  <a :href="'#/produkt/' + l.p.id" class="mk-line-name"><template v-for="s in hl(l.p.name)"><mark v-if="s.m">{{ s.t }}</mark><template v-else>{{ s.t }}</template></template></a>
+                  <div class="mk-line-meta"><span><template v-for="s in hl(l.p.code)"><mark v-if="s.m">{{ s.t }}</mark><template v-else>{{ s.t }}</template></template></span><span class="mk-pill">{{ l.p.pack }}</span></div>
                   <div class="mk-line-avail" :class="l.p.today ? 'ok' : 'no'"><span class="mk-dot-s" aria-hidden="true"></span>{{ l.p.today ? 'Dostupné' : 'Dnes nedostupné, doručíme po 2. 11. 2026' }}</div>
                 </div>
                 <div class="mk-line-unit">
