@@ -22,13 +22,8 @@
 .mk-os-min.ok .mk-os-bar > span { background: #1a8a5a; }
 
 /* ---- hero ---- */
-.mk-hero { position: relative; border-radius: 12px; overflow: hidden; min-height: 240px; }
-.mk-slide { min-height: 240px; box-sizing: border-box; padding: 32px 72px; display: flex; align-items: center; background-size: cover; }
 .mk-slide-txt { max-width: 560px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
-.mk-slide h2 { color: inherit; font-size: 32px; line-height: 40px; font-weight: 700; }
-.mk-slide p { margin: 0; font-size: 16px; line-height: 24px; }
 .mk-kicker { font-size: 13px; line-height: 18px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
-.mk-slide .mk-btn { margin-top: 8px; }
 .t-navy { background: linear-gradient(100deg, #002d72 0%, #0a3d91 60%, #1a5bc0 100%); color: #fff; }
 .t-navy .mk-kicker { color: #ffe500; }
 .t-blue { background: linear-gradient(100deg, #005ae0 0%, #2a7bf0 100%); color: #fff; }
@@ -41,17 +36,6 @@
 .mk-btn-navy:hover { background: #0a3d91; }
 .mk-btn-sec { background: #fff; color: #002d72; box-shadow: inset 0 0 0 1px #002d72; }
 .mk-btn-sec:hover { background: #f2f4f8; }
-.mk-hero-nav { position: absolute; top: 50%; width: 40px; height: 40px; margin-top: -20px; padding: 0; border: 0; border-radius: 99px; background: rgba(255, 255, 255, .9); display: grid; place-items: center; cursor: pointer; }
-.mk-hero-nav:hover { background: #fff; }
-.mk-hero-nav.prev { left: 16px; transform: rotate(90deg); }
-.mk-hero-nav.next { right: 16px; transform: rotate(-90deg); }
-.mk-dots { position: absolute; left: 0; right: 0; bottom: 12px; display: flex; justify-content: center; gap: 0; }
-.mk-dots button { position: relative; width: 24px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; }
-.mk-dots button::before { content: ""; position: absolute; left: 7px; top: 7px; width: 10px; height: 10px; border-radius: 99px; background: rgba(255, 255, 255, .6); }
-.mk-dots button.on::before { background: #fff; box-shadow: 0 0 0 2px rgba(0, 45, 114, .5); }
-.mk-hero.on-yellow .mk-dots button::before { background: rgba(0, 45, 114, .35); }
-.mk-hero.on-yellow .mk-dots button.on::before { background: #002d72; box-shadow: none; }
-.mk-hero :focus-visible { outline-color: #fff; }
 
 /* ---- last order + lists ---- */
 .mk-h-split { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px; }
@@ -93,11 +77,6 @@
 }
 @media (max-width: 768px) {
   .mk-home { gap: 24px; }
-  .mk-slide { padding: 24px 56px; min-height: 220px; }
-  .mk-slide h2 { font-size: 24px; line-height: 30px; }
-  .mk-slide p { font-size: 14px; line-height: 20px; }
-  .mk-hero-nav { display: none; }
-  .mk-slide { padding-inline: 20px; padding-bottom: 40px; }
   .mk-promos { grid-template-columns: 1fr; }
   .mk-os { grid-template-columns: 1fr; padding: 12px; }
   .mk-os-cell:first-child { flex-direction: row; justify-content: space-between; align-items: baseline; }
@@ -109,8 +88,6 @@
 @media (prefers-reduced-motion: reduce) { .mk-os-bar > span { transition: none; } }
 
 /* ---- Christmas banner ---- */
-.mk-hero, .mk-slide { min-height: 300px; }
-.mk-slide { position: relative; overflow: hidden; }
 .t-xmas { background: radial-gradient(55% 95% at 76% 58%, rgba(255, 190, 90, .24), transparent 62%), radial-gradient(40% 60% at 8% 100%, rgba(10, 61, 145, .55), transparent 70%), linear-gradient(105deg, #001230 0%, #002d72 46%, #0b3d91 100%); color: #fff; }
 .t-xmas .mk-kicker { color: #ffd23f; }
 .mk-slide-art { position: absolute; right: 40px; bottom: -6px; height: 108%; width: auto; max-width: none; pointer-events: none; user-select: none; }
@@ -124,25 +101,58 @@
 .mk-slide-txt { max-width: 600px; }
 .mk-cats { margin-top: -8px; }
 
-/* Above 768px the art is a flex sibling to the right of the text, so it shrinks to the free space instead of covering the text. */
-@media (min-width: 769px) {
-  .t-xmas { padding-bottom: 52px; }
-  .t-xmas .mk-slide-txt { flex: 0 0 auto; max-width: 500px; }
-  .mk-slide-art { position: static; order: 1; flex: 0 1 auto; min-width: 0; max-width: 100%; height: auto; align-self: flex-end; margin: 0 -24px -52px auto; }
-  .on-xmas .mk-dots { justify-content: flex-start; padding-left: 60px; box-sizing: border-box; }
-}
-@media (min-width: 769px) and (max-width: 1100px) {
-  .t-xmas { padding-left: 56px; }
-  .t-xmas .mk-slide-txt { max-width: 420px; }
+@media (max-width: 1100px) {
+  .mk-slide-art { right: -40px; opacity: .85; }
 }
 @media (max-width: 768px) {
-  .mk-hero, .mk-slide { min-height: 300px; }
-  .t-xmas { min-height: 440px; align-items: flex-start; }
-  .on-xmas .mk-dots { top: 8px; bottom: auto; justify-content: flex-end; padding-right: 8px; box-sizing: border-box; }
   .mk-slide-art { height: 46%; right: -50px; bottom: 0; opacity: .95; }
-  .t-xmas::before { background: linear-gradient(180deg, rgba(0, 18, 48, .8) 55%, rgba(0, 18, 48, 0) 85%); }
 }
 @media (max-width: 576px) {
   .mk-chips li:nth-child(n+4) { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .mk-snow, .mk-snow::after { animation: none; } }
+
+
+/* ---- banner widget: banners side by side, horizontal scroll on overflow, the first one wide (Košík.cz hero pattern) ---- */
+.mk-bw { position: relative; }
+.mk-bw-scroll { display: flex; gap: 16px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scrollbar-width: none; border-radius: 12px; }
+.mk-bw-scroll::-webkit-scrollbar { display: none; }
+.mk-bw-scroll:focus-visible { outline: 2px solid var(--mk-blue, #005ae0); outline-offset: 3px; }
+.mk-bw-item { position: relative; flex: 0 0 clamp(300px, 33%, 520px); min-height: 300px; box-sizing: border-box; padding: 28px; border-radius: 12px; overflow: hidden; scroll-snap-align: start; display: flex; }
+.mk-bw-item.wide { flex-basis: 62%; padding: 32px 56px; align-items: center; }
+.mk-bw-item.wide .mk-slide-art { height: 92%; right: 16px; }
+.mk-bw-item.wide .mk-slide-txt { max-width: 500px; }
+.mk-bw-item .mk-slide-txt { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; max-width: 600px; }
+.mk-bw-item:not(.wide) .mk-slide-txt { height: 100%; width: 100%; max-width: none; padding-right: 8px; }
+.mk-bw-item:not(.wide) .mk-btn { margin-top: auto; }
+.mk-bw-item h2 { margin: 0; color: inherit; font-size: 24px; line-height: 30px; font-weight: 700; }
+.mk-bw-item.wide h2 { font-size: 32px; line-height: 40px; }
+.mk-bw-item p { margin: 0; font-size: 14px; line-height: 20px; }
+.mk-bw-item.wide p { font-size: 16px; line-height: 24px; }
+.mk-bw-item .mk-btn { margin-top: 8px; }
+.mk-bw-badge { position: absolute; right: 20px; top: 20px; width: 72px; height: 72px; display: grid; place-items: center; border-radius: 99px; background: rgba(255, 255, 255, .18); color: inherit; }
+.t-yellow .mk-bw-badge { background: rgba(0, 45, 114, .1); }
+.mk-bw-badge svg { width: 40px; height: 40px; }
+.t-navy2 { background: linear-gradient(120deg, #0a3d91 0%, #1a5bc0 100%); color: #fff; }
+.t-navy2 .mk-kicker { color: #ffe500; }
+.t-ink { background: linear-gradient(120deg, #001230 0%, #14294d 100%); color: #fff; }
+.t-ink .mk-kicker { color: #ffe500; }
+.mk-bw-nav { position: absolute; top: 50%; z-index: 5; width: 44px; height: 44px; margin-top: -22px; padding: 0; border: 0; border-radius: 99px; background: #fff; box-shadow: 0 2px 10px rgba(0, 20, 48, .28); display: grid; place-items: center; cursor: pointer; }
+.mk-bw-nav:hover { background: #f2f4f8; }
+.mk-bw-nav.prev { left: 12px; transform: rotate(90deg); }
+.mk-bw-nav.next { right: 12px; transform: rotate(-90deg); }
+.mk-bw :focus-visible { outline-color: #fff; }
+
+@media (max-width: 1100px) {
+  .mk-bw-item.wide { flex-basis: 78%; }
+  .mk-bw-item.wide.t-xmas::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(0, 18, 48, .88) 35%, rgba(0, 18, 48, 0) 80%); pointer-events: none; }
+}
+@media (max-width: 768px) {
+  .mk-bw-item { flex-basis: 72%; min-height: 280px; padding: 22px; }
+  .mk-bw-item.wide { flex-basis: 88%; padding: 24px 20px; align-items: flex-start; min-height: 440px; }
+  .mk-bw-item.wide h2 { font-size: 26px; line-height: 32px; }
+  .mk-bw-item.wide.t-xmas::before { background: linear-gradient(180deg, rgba(0, 18, 48, .8) 55%, rgba(0, 18, 48, 0) 85%); }
+  .mk-bw-item.wide .mk-slide-art { height: 46%; right: -50px; bottom: 0; opacity: .95; }
+  .mk-bw-nav { display: none; }
+  .mk-bw-scroll { margin-inline: -16px; padding-inline: 16px; border-radius: 0; scroll-padding-inline: 16px; }
+}

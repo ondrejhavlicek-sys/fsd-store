@@ -62,8 +62,30 @@
     components: { MakroOrderStatus: Makro.OrderStatus, MakroProductRail: Makro.ProductRail },
     setup() {
       const home = Makro.home
-      const slide = Vue.ref(0)
-      const go = (d) => (slide.value = (slide.value + d + home.banners.length) % home.banners.length)
+      /* banner widget: banners side by side in a horizontal scroller; the arrows page it by ~70 % of its width */
+      const scroller = Vue.ref(null)
+      const atStart = Vue.ref(true), atEnd = Vue.ref(false)
+      const update = () => {
+        const el = scroller.value
+        if (!el) return
+        atStart.value = el.scrollLeft <= 4
+        atEnd.value = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4
+      }
+      const page = (d) => {
+        const el = scroller.value
+        if (!el) return
+        const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        el.scrollBy({ left: d * el.clientWidth * 0.7, behavior: calm ? 'auto' : 'smooth' })
+      }
+      const icons = {
+        fruit: 'M12 8c-2-2-6-1-7 3-1 4 2 9 5 9 1 0 1.5-.5 2-.5s1 .5 2 .5c3 0 6-5 5-9-1-4-5-5-7-3zM12 8c0-2 1-4 3-5',
+        repeat: 'M4 12a8 8 0 0 1 13.7-5.6L20 8M20 4v4h-4M20 12a8 8 0 0 1-13.7 5.6L4 16M4 20v-4h4',
+        card: 'M3 6h18v12H3zM3 10h18M7 15h4',
+        flyer: 'M5 3h14v18H5zM9 8h6M9 12h6M9 16h3',
+        truck: 'M2 6h11v10H2zM13 9h4l4 4v3h-8M6.5 19a1.5 1.5 0 1 0 0-.01M16.5 19a1.5 1.5 0 1 0 0-.01',
+      }
+      Vue.onMounted(() => { update(); window.addEventListener('resize', update) })
+      Vue.onBeforeUnmount(() => window.removeEventListener('resize', update))
       const soon = (what) => Makro.toast(what + ' zatím není součástí prototypu.')
       const order = Vue.computed(() => {
         const lines = home.lastOrder.lines.map(([id, q]) => ({ p: Makro.byId(id), q }))
@@ -75,32 +97,34 @@
         const n = Makro.reorder()
         Makro.toast('Do košíku jsme přidali ' + n + ' ' + Makro.plural(n, 'položku', 'položky', 'položek') + ' z objednávky ' + home.lastOrder.no + '.')
       }
-      const bannerAction = (b) => (b.id === 'b3' ? reorder() : b.id === 'b2' ? soon('Akční nabídka') : soon('Vánoční nabídka'))
+      const bannerAction = (b) => (b.id === 'b3' ? reorder() : b.id === 'b2' ? soon('Akční nabídka') : b.id === 'b4' ? soon('makro karta') : b.id === 'b5' ? soon('Leták') : b.id === 'b6' ? soon('Výběr termínu doručení') : soon('Vánoční nabídka'))
       const goCategory = () => { location.hash = Makro.categoryHash }
       const tile = (t) => (t.fruit ? soon('Kategorie ' + t.name) : goCategory())
       const group = (g) => g.ids.map((id) => Makro.byId(id))
-      return { home, slide, go, soon, order, reorder, bannerAction, tile, goCategory, group, store: Makro.store, kc: Makro.kc, src: (n) => base() + 'assets/' + n }
+      return { home, scroller, atStart, atEnd, update, page, icons, soon, order, reorder, bannerAction, tile, goCategory, group, store: Makro.store, kc: Makro.kc, src: (n) => base() + 'assets/' + n }
     },
     template: `
       <main class="mk-wrap mk-page mk-home" data-tid="homepage">
         <h1 class="mk-sr">Úvodní stránka</h1>
         <makro-order-status></makro-order-status>
 
-        <section class="mk-hero" :class="'on-' + home.banners[slide].theme" aria-roledescription="carousel" aria-label="Aktuální nabídky">
-          <div class="mk-slide" v-for="(b, i) in home.banners" :key="b.id" v-show="i === slide" :class="'t-' + b.theme" role="group" :aria-label="(i + 1) + ' z ' + home.banners.length">
-            <img v-if="b.art" class="mk-slide-art" :src="b.art" alt="" width="720" height="320">
-            <span v-if="b.theme === 'xmas'" class="mk-snow" aria-hidden="true"></span>
-            <div class="mk-slide-txt">
-              <span class="mk-kicker">{{ b.kicker }}</span>
-              <h2>{{ b.title }}</h2>
-              <p>{{ b.text }}</p>
-              <ul v-if="b.chips" class="mk-chips" aria-label="Vánoční kategorie"><li v-for="c in b.chips" :key="c"><button type="button" class="mk-chip" @click="soon('Kategorie „' + c + '“')">{{ c }}</button></li></ul>
-              <button type="button" class="mk-btn" :class="b.theme === 'yellow' ? 'mk-btn-navy' : 'mk-btn-yellow'" @click="bannerAction(b)">{{ b.cta }}</button>
-            </div>
+        <section class="mk-bw" aria-label="Aktuální nabídky">
+          <div ref="scroller" class="mk-bw-scroll" role="region" tabindex="0" aria-label="Aktuální nabídky, posouvejte vodorovně" @scroll.passive="update">
+            <article v-for="(b, i) in home.banners" :key="b.id" class="mk-bw-item" :class="['t-' + b.theme, { wide: i === 0 }]" :aria-label="b.title">
+              <img v-if="b.art" class="mk-slide-art" :src="b.art" alt="" width="720" height="320">
+              <span v-if="b.theme === 'xmas'" class="mk-snow" aria-hidden="true"></span>
+              <span v-if="b.icon" class="mk-bw-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path :d="icons[b.icon]"/></svg></span>
+              <div class="mk-slide-txt">
+                <span class="mk-kicker">{{ b.kicker }}</span>
+                <h2>{{ b.title }}</h2>
+                <p>{{ b.text }}</p>
+                <ul v-if="b.chips" class="mk-chips" aria-label="Vánoční kategorie"><li v-for="c in b.chips" :key="c"><button type="button" class="mk-chip" @click="soon('Kategorie „' + c + '“')">{{ c }}</button></li></ul>
+                <button type="button" class="mk-btn" :class="b.theme === 'yellow' ? 'mk-btn-navy' : 'mk-btn-yellow'" @click="bannerAction(b)">{{ b.cta }}</button>
+              </div>
+            </article>
           </div>
-          <button type="button" class="mk-hero-nav prev" aria-label="Předchozí nabídka" @click="go(-1)"><img :src="src('icons/chevron-down.svg')" alt="" width="20" height="20"></button>
-          <button type="button" class="mk-hero-nav next" aria-label="Další nabídka" @click="go(1)"><img :src="src('icons/chevron-down.svg')" alt="" width="20" height="20"></button>
-          <div class="mk-dots" role="group" aria-label="Výběr nabídky"><button v-for="(b, i) in home.banners" :key="b.id" type="button" :aria-current="i === slide ? 'true' : undefined" :aria-label="'Nabídka ' + (i + 1)" :class="{ on: i === slide }" @click="slide = i"></button></div>
+          <button v-show="!atStart" type="button" class="mk-bw-nav prev" aria-label="Předchozí nabídky" @click="page(-1)"><img :src="src('icons/chevron-down.svg')" alt="" width="20" height="20"></button>
+          <button v-show="!atEnd" type="button" class="mk-bw-nav next" aria-label="Další nabídky" @click="page(1)"><img :src="src('icons/chevron-down.svg')" alt="" width="20" height="20"></button>
         </section>
 
         <section class="mk-cats" aria-labelledby="h-cats">
