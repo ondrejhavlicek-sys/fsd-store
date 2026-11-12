@@ -145,8 +145,11 @@
   const home = {
     banners: [
       { id: 'b1', theme: 'xmas', art: 'assets/hero/xmas-scene.svg', kicker: 'Vánoce', title: 'Objednejte vánoční sortiment s předstihem', text: 'Čokolády a cukrovinky, víno a šumivá vína, ryby i vánoční dekorace. Doručíme přesně na vaši provozovnu.', chips: ['Vánoční čokolády', 'Vánoční balíčky', 'Víno a šumivá vína', 'Vánoční dekorace a ozdoby', 'Vánoční stromky umělé'], cta: 'Zobrazit nabídku' },
-      { id: 'b2', theme: 'blue', kicker: 'Akce týdne', title: 'Čerstvé ovoce za výhodné ceny', text: 'Vybrané druhy ovoce a zeleniny se slevou až 30 % do 2. 11.', cta: 'Zobrazit akce' },
-      { id: 'b3', theme: 'yellow', kicker: 'Rychle a jednoduše', title: 'Zopakujte poslední objednávku jedním klikem', text: 'Stejné položky, stejná provozovna, nový termín dodání.', cta: 'Znovu objednat' },
+      { id: 'b2', theme: 'blue', icon: 'fruit', kicker: 'Akce týdne', title: 'Čerstvé ovoce za výhodné ceny', text: 'Vybrané druhy ovoce a zeleniny se slevou až 30 % do 2. 11.', cta: 'Zobrazit akce' },
+      { id: 'b3', theme: 'yellow', icon: 'repeat', kicker: 'Rychle a jednoduše', title: 'Zopakujte poslední objednávku jedním klikem', text: 'Stejné položky, stejná provozovna, nový termín dodání.', cta: 'Znovu objednat' },
+      { id: 'b4', theme: 'ink', icon: 'card', kicker: 'makro karta', title: 'Speciální ceny pro držitele karty', text: 'Bonusový program a výhodné ceny pro vaše podnikání.', cta: 'Získat kartu' },
+      { id: 'b5', theme: 'navy2', icon: 'flyer', kicker: 'Leták', title: 'Aktuální leták pro gastronomii', text: 'Nabídky platné do 2. 11. na suroviny, nápoje i vybavení.', cta: 'Zobrazit leták' },
+      { id: 'b6', theme: 'blue', icon: 'truck', kicker: 'Doručení', title: 'Doručení na provozovnu už zítra', text: 'Objednejte do 23:00 a zboží dorazí v termínu, který si zvolíte.', cta: 'Vybrat termín' },
     ],
     lastOrder: { no: '9-100000123', date: 'čt 22. 10. 2026', status: 'Doručeno', net: 2684.4, lines: [['p2', 2], ['f2', 12], ['f10', 4], ['f13', 6], ['f21', 3]] },
     lists: [{ id: 'l1', name: 'Týdenní nákup', count: 5 }, { id: 'l2', name: 'Víkendové menu', count: 4 }],

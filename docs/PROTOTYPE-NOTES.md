@@ -7,7 +7,7 @@ Start it with `python3 serve.py 5190` and open `http://localhost:5190/index.html
 
 | Route | Screen | Reference used |
 |---|---|---|
-| `#/` | Homepage: order status, hero carousel (the Christmas slide has an illustrated scene `assets/hero/xmas-scene.svg`, falling snow and category chips), then "Oblíbené kategorie", last order and lists, product rows | no Figma frame; kit homepage, kosik.cz, live makro homepage |
+| `#/` | Homepage: order status, banner widget (six banners side by side in a horizontally scrollable row, the first one wide like the Košík.cz hero, arrows page the row, the next banner peeks in at the edge; the wide Christmas banner has an illustrated scene `assets/hero/xmas-scene.svg`, falling snow and category chips), then "Oblíbené kategorie", last order and lists, product rows | no Figma frame; kit homepage, kosik.cz, live makro homepage |
 | `#/?variant=cards` | Homepage alternative: the cards "Poslední objednávka" and "Moje seznamy" are shown below the category tiles; in the default layout they are hidden because the same content opens from the nav bar items (popovers). The "Prototyp" pill in the corner switches | – |
 | `#/kategorie/parky-spekacky-tocene-salamy` | Category page: subcategory tiles, filter bar (Filtry button with badge, chips, quick pills), "Filtry a řazení" drawer (bottom sheet on phones), count, VAT switch, sorting, product grid | Figma FSD-Store `18:5253`; filters: kosik.cz category page (drawer, chips, pills), live makro filter column (groups) |
 | `#/produkt/:id` | Product detail (35 mock products) | no Figma frame; kosik.cz and live makro product page |
